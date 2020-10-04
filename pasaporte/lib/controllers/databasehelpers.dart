@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DataBaseHelper {
-  String serverUrl = "http://10.0.0.4:8000/api";
-  String serverUrlproducts = "http:/10.0.0.4:8000/api/products";
+  String serverUrl = "http://10.0.0.4:8000//api";
+  String serverUrlproducts = "http://10.0.0.4:8000//api/products";
 
   var status;
 

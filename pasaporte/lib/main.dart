@@ -7,6 +7,7 @@ import 'package:pasaporte/view/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:pasaporte/view/pasaporte.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyApp());
@@ -50,8 +51,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text("Pasaporte Deportivo", style: TextStyle(color: Colors.white)),
+        title: Text("Pasaporte Deportivo", style: TextStyle(color: Colors.white)),
         actions: <Widget>[
           FlatButton(
             onPressed: () {
@@ -81,10 +81,10 @@ class _MainPageState extends State<MainPage> {
               // ),
             ),
             new ListTile(
-              title: new Text("List Products"),
+              title: new Text("Pasaporte"),
               trailing: new Icon(Icons.help),
               onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                builder: (BuildContext context) => ListProducts(),
+                builder: (BuildContext context) => Pasaporte(),
               )),
             ),
             new ListTile(
