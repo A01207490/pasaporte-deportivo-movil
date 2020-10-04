@@ -12,7 +12,7 @@ class Detail extends StatefulWidget {
 
 class _DetailState extends State<Detail> {
 
-//https://medium.com/flutter-community/working-with-dates-in-dart-e81c70911811
+  //https://medium.com/flutter-community/working-with-dates-in-dart-e81c70911811
   @override
   Widget build(BuildContext context) {
      return new Scaffold(
