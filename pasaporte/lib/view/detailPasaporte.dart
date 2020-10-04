@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
-class Detail extends StatefulWidget {
+class DetailPasaporte extends StatefulWidget {
 
   List list;
   int index;
-  Detail({this.index,this.list});
+  DetailPasaporte({this.index,this.list});
 
   @override
-  _DetailState createState() => _DetailState();
+  _DetailPasaporteState createState() => _DetailPasaporteState();
 }
 
-class _DetailState extends State<Detail> {
+class _DetailPasaporteState extends State<DetailPasaporte> {
 
   //https://medium.com/flutter-community/working-with-dates-in-dart-e81c70911811
   @override

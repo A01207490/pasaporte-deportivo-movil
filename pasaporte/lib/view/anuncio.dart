@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:pasaporte/view/detailPasaporte.dart';
+import 'package:pasaporte/view/detailAnuncio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Anuncio extends StatefulWidget {
@@ -66,7 +66,7 @@ class ItemList extends StatelessWidget {
           child: new GestureDetector(
             onTap: () => Navigator.of(context).push(
               new MaterialPageRoute(
-                  builder: (BuildContext context) => new Detail(
+                  builder: (BuildContext context) => new DetailAnuncio(
                     list: list,
                     index: i,
                   )),

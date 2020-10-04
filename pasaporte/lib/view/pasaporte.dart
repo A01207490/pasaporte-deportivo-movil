@@ -70,7 +70,7 @@ class ItemList extends StatelessWidget {
           child: new GestureDetector(
             onTap: () => Navigator.of(context).push(
               new MaterialPageRoute(
-                  builder: (BuildContext context) => new Detail(
+                  builder: (BuildContext context) => new DetailPasaporte(
                     list: list,
                     index: i,
                   )),
