@@ -51,6 +51,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.indigo[900],
         title: Text("Pasaporte Deportivo", style: TextStyle(color: Colors.white)),
         actions: <Widget>[
           FlatButton(
@@ -67,10 +68,14 @@ class _MainPageState extends State<MainPage> {
         ],
       ),
       body: Center(child: Text("Main Page")),
+
       drawer: Drawer(
+
         child: new ListView(
+
           children: <Widget>[
             new UserAccountsDrawerHeader(
+
               accountName: new Text('Ejercicios'),
               accountEmail: new Text('codigoalphacol@gmail.com'),
               // decoration: new BoxDecoration(
@@ -82,14 +87,14 @@ class _MainPageState extends State<MainPage> {
             ),
             new ListTile(
               title: new Text("Pasaporte"),
-              trailing: new Icon(Icons.help),
+              leading: new Icon(Icons.directions_bike,  color: Colors.indigo),
               onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                 builder: (BuildContext context) => Pasaporte(),
               )),
             ),
             new ListTile(
-              title: new Text("Add Products"),
-              trailing: new Icon(Icons.help),
+              title: new Text("Anuncios"),
+              leading: new Icon(Icons.announcement,  color: Colors.indigo),
               onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                 builder: (BuildContext context) => AddDataProduct(),
               )),
