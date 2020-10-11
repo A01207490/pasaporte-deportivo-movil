@@ -4,23 +4,20 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:pasaporte/view/detailPasaporte.dart';
-import 'package:pasaporte/view/clase.dart';
+import 'package:pasaporte/view/pasaporte.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pasaporte/view/pasaporte.dart';
 
-class Pasaporte extends StatefulWidget {
+class Clase extends StatefulWidget {
   @override
-  _PasaporteState createState() => _PasaporteState();
+  _ClaseState createState() => _ClaseState();
 }
 
-class _PasaporteState extends State<Pasaporte> {
+class _ClaseState extends State<Clase> {
   List data;
 
   Future<List> getData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final key = 'token';
-    final token = prefs.get(key) ?? 0;
-    Map param = {'token': '$token'};
-    var response = await http.post("http://10.0.0.4:8000/api/getSessions", body: param);
+    final response = await http.get("http://10.0.0.4:8000/api/getCurrentClasses");
     if (response.statusCode == 200) {
       print(json.decode(response.body));
       return json.decode(response.body);
@@ -40,18 +37,7 @@ class _PasaporteState extends State<Pasaporte> {
     return new Scaffold(
       appBar: new AppBar(
         backgroundColor: Colors.indigo[900],
-        title: new Text("Pasaporte"),
-        actions: <Widget>[
-          FlatButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Clase()),
-              );
-            },
-            child: Icon(Icons.add_circle_outline, color: Colors.white,),
-          ),
-        ],
+        title: new Text("Clases"),
       ),
       body: new FutureBuilder<List>(
         future: getData(),
@@ -95,14 +81,20 @@ class ItemList extends StatelessWidget {
                     Icon(Icons.check, color: Colors.blueGrey,),
                   ],
                 ),
+                trailing: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(Icons.add_circle_outline, color: Colors.blueGrey,),
+                  ],
+                ),
                 title: new Text(
-                 'Clase',
+                  'Clase',
                   style: TextStyle(fontSize: 12.0, color: Colors.blueGrey),
                 ),
                 subtitle: new Text(
-                list[i]['clase_nombre'].toString(),
-                style: TextStyle(fontSize: 14.0, color: Colors.black),
-              ),
+                  list[i]['clase_nombre'].toString(),
+                  style: TextStyle(fontSize: 14.0, color: Colors.black),
+                ),
               ),
             ),
           ),
