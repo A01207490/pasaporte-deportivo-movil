@@ -3,24 +3,19 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:pasaporte/view/detailPasaporte.dart';
-import 'package:pasaporte/view/clase.dart';
+import 'package:pasaporte/view/detailAnuncio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Pasaporte extends StatefulWidget {
+class Anuncio extends StatefulWidget {
   @override
-  _PasaporteState createState() => _PasaporteState();
+  _AnuncioState createState() => _AnuncioState();
 }
 
-class _PasaporteState extends State<Pasaporte> {
+class _AnuncioState extends State<Anuncio> {
   List data;
 
   Future<List> getData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final key = 'token';
-    final token = prefs.get(key) ?? 0;
-    Map param = {'token': '$token'};
-    var response = await http.post("http://10.0.0.4:8000/api/getSessions", body: param);
+    final response = await http.get("http://10.0.0.4:8000/api/getAnuncios");
     if (response.statusCode == 200) {
       print(json.decode(response.body));
       return json.decode(response.body);
@@ -40,18 +35,7 @@ class _PasaporteState extends State<Pasaporte> {
     return new Scaffold(
       appBar: new AppBar(
         backgroundColor: Colors.indigo[900],
-        title: new Text("Pasaporte"),
-        actions: <Widget>[
-          FlatButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Clase()),
-              );
-            },
-            child: Icon(Icons.add_circle_outline, color: Colors.white,),
-          ),
-        ],
+        title: new Text("Anuncios"),
       ),
       body: new FutureBuilder<List>(
         future: getData(),
@@ -82,7 +66,7 @@ class ItemList extends StatelessWidget {
           child: new GestureDetector(
             onTap: () => Navigator.of(context).push(
               new MaterialPageRoute(
-                  builder: (BuildContext context) => new DetailPasaporte(
+                  builder: (BuildContext context) => new DetailAnuncio(
                     list: list,
                     index: i,
                   )),
@@ -96,13 +80,13 @@ class ItemList extends StatelessWidget {
                   ],
                 ),
                 title: new Text(
-                 'Clase',
+                  'Anuncio',
                   style: TextStyle(fontSize: 12.0, color: Colors.blueGrey),
                 ),
                 subtitle: new Text(
-                list[i]['clase_nombre'].toString(),
-                style: TextStyle(fontSize: 14.0, color: Colors.black),
-              ),
+                  list[i]['anuncio_titulo'].toString(),
+                  style: TextStyle(fontSize: 14.0, color: Colors.black),
+                ),
               ),
             ),
           ),

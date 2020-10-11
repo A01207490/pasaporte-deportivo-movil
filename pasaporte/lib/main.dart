@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:pasaporte/view/pasaporte.dart';
+import 'package:pasaporte/view/anuncio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyApp());
@@ -67,7 +68,18 @@ class _MainPageState extends State<MainPage> {
           ),
         ],
       ),
-      body: Center(child: Text("Main Page")),
+      body: new Container(
+        padding: const EdgeInsets.all(20.0),
+        child: new ListView(
+          children: <Widget>[
+            new ListTile(title: new Text('Participa en las clases o clínicas deportivas que desees.', style: new TextStyle(fontSize: 14.0, color: Colors.blueGrey))),
+            new ListTile(title: new Text('Cuenta para tu registro de actividades extracurriculares.', style: new TextStyle(fontSize: 14.0, color: Colors.blueGrey))),
+            new ListTile(title: new Text('Participar en las clases o clínicas deportivas que desees.', style: new TextStyle(fontSize: 14.0, color: Colors.blueGrey))),
+
+          ],
+        ),
+      ),
+
 
       drawer: Drawer(
 
@@ -75,38 +87,30 @@ class _MainPageState extends State<MainPage> {
 
           children: <Widget>[
             new UserAccountsDrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.indigo[900],
+              ),
+              accountName: new Text('Pasaporte'),
+              accountEmail: new Text('pasaporte@gmail.com'),
 
-              accountName: new Text('Ejercicios'),
-              accountEmail: new Text('codigoalphacol@gmail.com'),
-              // decoration: new BoxDecoration(
-              //   image: new DecorationImage(
-              //     fit: BoxFit.fill,
-              //    // image: AssetImage('img/estiramiento.jpg'),
-              //   )
-              // ),
             ),
             new ListTile(
               title: new Text("Pasaporte"),
-              leading: new Icon(Icons.directions_bike,  color: Colors.indigo),
+              leading: new Icon(Icons.directions_bike,  color: Colors.blueGrey),
               onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                 builder: (BuildContext context) => Pasaporte(),
               )),
             ),
             new ListTile(
               title: new Text("Anuncios"),
-              leading: new Icon(Icons.announcement,  color: Colors.indigo),
+              leading: new Icon(Icons.announcement,  color: Colors.blueGrey),
               onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                builder: (BuildContext context) => AddDataProduct(),
+                builder: (BuildContext context) => Anuncio(),
               )),
             ),
             new Divider(),
-            new ListTile(
-              title: new Text("Register user"),
-              trailing: new Icon(Icons.fitness_center),
-              onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                builder: (BuildContext context) => AddUser(),
-              )),
-            ),
+
+
           ],
         ),
       ),

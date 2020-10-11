@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:pasaporte/view/detailProduct.dart';
+import 'package:pasaporte/view/detailPasaporte.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -64,7 +64,7 @@ class ItemList extends StatelessWidget {
           child: new GestureDetector(
             onTap: () => Navigator.of(context).push(
                   new MaterialPageRoute(
-                      builder: (BuildContext context) => new Detail(
+                      builder: (BuildContext context) => new DetailPasaporte(
                             list: list,
                             index: i,
                           )),
