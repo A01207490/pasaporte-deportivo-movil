@@ -7,7 +7,6 @@ class DataBaseHelper {
   String serverUrlproducts = "http://10.0.0.4:8000//api/products";
 
   var status;
-
   var token;
 
   //create function for login
