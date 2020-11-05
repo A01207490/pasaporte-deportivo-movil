@@ -20,7 +20,7 @@ class _ClaseState extends State<Clase> {
 
 
   Future<List> getData() async {
-    final response = await http.get("http://10.0.0.4:8000/api/getCurrentClasses");
+    final response = await http.get("http://pasaportedeportivoitesm.com/api/getCurrentClasses");
     if (response.statusCode == 200) {
       print(json.decode(response.body));
       return json.decode(response.body);
@@ -77,7 +77,7 @@ class ItemList extends StatelessWidget {
       'clase_id': '$clase_id',
       'coach_nomina': '$coach_nomina'
     };
-    var response = await http.post("http://10.0.0.4:8000/api/registerSession", body: param);
+    var response = await http.post("http://pasaportedeportivoitesm.com/api/registerSession", body: param);
     if (response.statusCode == 200) {
       print(json.decode(response.body));
       return json.decode(response.body);

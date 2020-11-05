@@ -53,7 +53,8 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.indigo[900],
-        title: Text("Pasaporte Deportivo", style: TextStyle(color: Colors.white)),
+        title:
+            Text("Pasaporte Deportivo", style: TextStyle(color: Colors.white)),
         actions: <Widget>[
           FlatButton(
             onPressed: () {
@@ -72,19 +73,16 @@ class _MainPageState extends State<MainPage> {
         padding: const EdgeInsets.all(20.0),
         child: new ListView(
           children: <Widget>[
-            new ListTile(title: new Text('Participa en las clases o clínicas deportivas que desees.', style: new TextStyle(fontSize: 14.0, color: Colors.blueGrey))),
-            new ListTile(title: new Text('Cuenta para tu registro de actividades extracurriculares.', style: new TextStyle(fontSize: 14.0, color: Colors.blueGrey))),
-            new ListTile(title: new Text('Participar en las clases o clínicas deportivas que desees.', style: new TextStyle(fontSize: 14.0, color: Colors.blueGrey))),
-
+            new ListTile(
+                title: new Text(
+                    'Bienvenido, participa en las clases o clínicas deportivas que desees.',
+                    style:
+                        new TextStyle(fontSize: 14.0, color: Colors.blueGrey))),
           ],
         ),
       ),
-
-
       drawer: Drawer(
-
         child: new ListView(
-
           children: <Widget>[
             new UserAccountsDrawerHeader(
               decoration: BoxDecoration(
@@ -92,25 +90,22 @@ class _MainPageState extends State<MainPage> {
               ),
               accountName: new Text('Pasaporte'),
               accountEmail: new Text('pasaporte@gmail.com'),
-
             ),
             new ListTile(
               title: new Text("Pasaporte"),
-              leading: new Icon(Icons.directions_bike,  color: Colors.blueGrey),
+              leading: new Icon(Icons.directions_bike, color: Colors.blueGrey),
               onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                 builder: (BuildContext context) => Pasaporte(),
               )),
             ),
             new ListTile(
               title: new Text("Anuncios"),
-              leading: new Icon(Icons.announcement,  color: Colors.blueGrey),
+              leading: new Icon(Icons.announcement, color: Colors.blueGrey),
               onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                 builder: (BuildContext context) => Anuncio(),
               )),
             ),
             new Divider(),
-
-
           ],
         ),
       ),

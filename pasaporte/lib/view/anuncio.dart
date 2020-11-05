@@ -14,39 +14,39 @@ class Anuncio extends StatefulWidget {
 class _AnuncioState extends State<Anuncio> {
   List data;
 
-  Future<List> getData() async {
-    final response = await http.get("http://10.0.0.4:8000/api/getAnuncios");
+    Future<List> getData() async {
+    final response = await http.get("http://pasaportedeportivoitesm.com/api/getAnuncios");
     if (response.statusCode == 200) {
-      print(json.decode(response.body));
-      return json.decode(response.body);
+    print(json.decode(response.body));
+    return json.decode(response.body);
     } else {
-      print(response.statusCode);
+    print(response.statusCode);
     }
-  }
+    }
 
-  @override
-  void initState() {
+    @override
+    void initState() {
     super.initState();
     this.getData();
-  }
+    }
 
-  @override
-  Widget build(BuildContext context) {
+    @override
+    Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        backgroundColor: Colors.indigo[900],
-        title: new Text("Anuncios"),
-      ),
-      body: new FutureBuilder<List>(
-        future: getData(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) print(snapshot.error);
-          return snapshot.hasData
-              ? new ItemList(
-            list: snapshot.data,
-          )
-              : new Center(
-            child: new CircularProgressIndicator(),
+    appBar: new AppBar(
+    backgroundColor: Colors.indigo[900],
+    title: new Text("Anuncios"),
+    ),
+    body: new FutureBuilder<List>(
+    future: getData(),
+    builder: (context, snapshot) {
+    if (snapshot.hasError) print(snapshot.error);
+    return snapshot.hasData
+    ? new ItemList(
+    list: snapshot.data,
+    )
+        : new Center(
+    child: new CircularProgressIndicator(),
           );
         },
       ),

@@ -1,29 +1,19 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:pasaporte/controllers/databasehelpers.dart';
-import 'package:pasaporte/view/detailPasaporte.dart';
-import 'package:pasaporte/view/clase.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pasaporte/view/detailAnuncio.dart';
 
-class Pasaporte extends StatefulWidget {
+class ClaseIndex extends StatefulWidget {
   @override
-  _PasaporteState createState() => _PasaporteState();
+  _ClaseIndexState createState() => _ClaseIndexState();
 }
 
-class _PasaporteState extends State<Pasaporte> {
+class _ClaseIndexState extends State<ClaseIndex> {
   List data;
-  DataBaseHelper databaseHelper = new DataBaseHelper();
 
   Future<List> getData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final key = 'token';
-    final token = prefs.get(key) ?? 0;
-    Map param = {'token': '$token'};
-    var response =
-        await http.post("http://pasaportedeportivoitesm.com/api/getSessions", body: param);
+    final response = await http.get("http://10.0.0.4:8000/api/getClasses");
     if (response.statusCode == 200) {
       print(json.decode(response.body));
       return json.decode(response.body);
@@ -36,7 +26,6 @@ class _PasaporteState extends State<Pasaporte> {
   void initState() {
     super.initState();
     this.getData();
-    databaseHelper.getSessions();
   }
 
   @override
@@ -44,21 +33,7 @@ class _PasaporteState extends State<Pasaporte> {
     return new Scaffold(
       appBar: new AppBar(
         backgroundColor: Colors.indigo[900],
-        title: new Text("Pasaporte"),
-        actions: <Widget>[
-          FlatButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Clase()),
-              );
-            },
-            child: Icon(
-              Icons.add_circle_outline,
-              color: Colors.white,
-            ),
-          ),
-        ],
+        title: new Text("Clases"),
       ),
       body: new FutureBuilder<List>(
         future: getData(),
@@ -66,11 +41,11 @@ class _PasaporteState extends State<Pasaporte> {
           if (snapshot.hasError) print(snapshot.error);
           return snapshot.hasData
               ? new ItemList(
-                  list: snapshot.data,
-                )
+            list: snapshot.data,
+          )
               : new Center(
-                  child: new CircularProgressIndicator(),
-                );
+            child: new CircularProgressIndicator(),
+          );
         },
       ),
     );
@@ -79,9 +54,7 @@ class _PasaporteState extends State<Pasaporte> {
 
 class ItemList extends StatelessWidget {
   final List list;
-
   ItemList({this.list});
-
   @override
   Widget build(BuildContext context) {
     return new ListView.builder(
@@ -91,20 +64,17 @@ class ItemList extends StatelessWidget {
           child: new GestureDetector(
             onTap: () => Navigator.of(context).push(
               new MaterialPageRoute(
-                  builder: (BuildContext context) => new DetailPasaporte(
-                        list: list,
-                        index: i,
-                      )),
+                  builder: (BuildContext context) => new DetailAnuncio(
+                    list: list,
+                    index: i,
+                  )),
             ),
             child: new Card(
               child: new ListTile(
                 leading: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Icon(
-                      Icons.check,
-                      color: Colors.blueGrey,
-                    ),
+                    Icon(Icons.check, color: Colors.blueGrey,),
                   ],
                 ),
                 title: new Text(

@@ -55,7 +55,7 @@ class _DetailPasaporteState extends State<DetailPasaporte> {
                 ],
               ),
               title: new Text('Horario', style: new TextStyle(fontSize: 12.0, color: Colors.blueGrey)),
-              subtitle: new Text("${widget.list[widget.index]['clase_hora_inicio']}" + " - " + " ${widget.list[widget.index]['clase_hora_fin']}", style: new TextStyle(fontSize: 14.0, color: Colors.black)),
+              subtitle: new Text("${widget.list[widget.index]['clase_hora_inicio']}" + " - " + "${widget.list[widget.index]['clase_hora_fin']}", style: new TextStyle(fontSize: 14.0, color: Colors.black)),
             ),
             new Divider(),
           ],

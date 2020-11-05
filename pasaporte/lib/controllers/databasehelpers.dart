@@ -3,11 +3,30 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DataBaseHelper {
-  String serverUrl = "http://10.0.0.4:8000//api";
-  String serverUrlproducts = "http://10.0.0.4:8000//api/products";
+  String serverUrl = "http://pasaportedeportivoitesm.com/api";
+  String serverUrlproducts = "http://pasaportedeportivoitesm.com//api/products";
 
   var status;
   var token;
+
+  Future<List> getSessions() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final key = 'token';
+    final token = prefs.get(key) ?? 0;
+    Map param = {'token': '$token'};
+    String url = "$serverUrl/getSessions";
+    var response = await http.post(
+        url,
+        body: param);
+    print(url);
+    if (response.statusCode == 200) {
+      print(json.decode(response.body));
+      return json.decode(response.body);
+    } else {
+      print(response.statusCode);
+      return json.decode(response.body);
+    }
+  }
 
   //create function for login
   loginData(String email, String password) async {
