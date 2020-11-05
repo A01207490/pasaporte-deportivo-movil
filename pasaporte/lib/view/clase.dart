@@ -18,9 +18,9 @@ class Clase extends StatefulWidget {
 class _ClaseState extends State<Clase> {
   List data;
 
-
   Future<List> getData() async {
-    final response = await http.get("http://pasaportedeportivoitesm.com/api/getCurrentClasses");
+    final response = await http
+        .get("http://pasaportedeportivoitesm.com/api/getCurrentClasses");
     if (response.statusCode == 200) {
       print(json.decode(response.body));
       return json.decode(response.body);
@@ -49,11 +49,11 @@ class _ClaseState extends State<Clase> {
           if (snapshot.hasError) print(snapshot.error);
           return snapshot.hasData
               ? new ItemList(
-            list: snapshot.data,
-          )
+                  list: snapshot.data,
+                )
               : new Center(
-            child: new CircularProgressIndicator(),
-          );
+                  child: new CircularProgressIndicator(),
+                );
         },
       ),
     );
@@ -62,11 +62,13 @@ class _ClaseState extends State<Clase> {
 
 class ItemList extends StatelessWidget {
   final List list;
+
   ItemList({this.list});
 
-  void _registerClass(String clase_id) async{
+  void _registerClass(String clase_id) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var coach_nomina = await FlutterBarcodeScanner.scanBarcode("#000000", "Cancel", true, ScanMode.QR);
+    var coach_nomina = await FlutterBarcodeScanner.scanBarcode(
+        "#000000", "Cancel", true, ScanMode.QR);
     final key = 'token';
     final token = sharedPreferences.get(key) ?? 0;
     print(coach_nomina);
@@ -77,7 +79,9 @@ class ItemList extends StatelessWidget {
       'clase_id': '$clase_id',
       'coach_nomina': '$coach_nomina'
     };
-    var response = await http.post("http://pasaportedeportivoitesm.com/api/registerSession", body: param);
+    var response = await http.post(
+        "http://pasaportedeportivoitesm.com/api/registerSession",
+        body: param);
     if (response.statusCode == 200) {
       print(json.decode(response.body));
       return json.decode(response.body);
@@ -85,8 +89,20 @@ class ItemList extends StatelessWidget {
       print(response.statusCode);
     }
   }
+
   @override
   Widget build(BuildContext context) {
+    if (list.length == 0)
+      return new ListView(
+        padding: const EdgeInsets.all(20.0),
+        children: <Widget>[
+          new ListTile(
+              title: new Text(
+            'No hay clases disponibles.',
+          )),
+        ],
+      );
+
     return new ListView.builder(
       itemCount: list == null ? 0 : list.length,
       itemBuilder: (context, i) {
@@ -98,13 +114,19 @@ class ItemList extends StatelessWidget {
                 leading: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Icon(Icons.check, color: Colors.blueGrey,),
+                    Icon(
+                      Icons.check,
+                      color: Colors.blueGrey,
+                    ),
                   ],
                 ),
                 trailing: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                      Icon(Icons.add_circle_outline, color: Colors.blueGrey,),
+                    Icon(
+                      Icons.add_circle_outline,
+                      color: Colors.blueGrey,
+                    ),
                   ],
                 ),
                 title: new Text(

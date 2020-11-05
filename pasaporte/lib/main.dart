@@ -17,11 +17,27 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Pasaporte Deportivo",
-      debugShowCheckedModeBanner: false,
-      home: MainPage(),
-      theme: ThemeData(accentColor: Colors.white70),
-    );
+        title: "Pasaporte Deportivo",
+        debugShowCheckedModeBanner: false,
+        home: MainPage(),
+        theme: ThemeData(
+          // Define the default brightness and colors.
+          brightness: Brightness.light,
+          primaryColor: Colors.indigo[600],
+          accentColor: Colors.redAccent[100],
+
+          // Define the default font family.
+          fontFamily: 'Ubuntu',
+
+          // Define the default TextTheme. Use this to specify the default
+          // text styling for headlines, titles, bodies of text, and more.
+          textTheme:
+          TextTheme(
+            headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
+            headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+            bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
+          ),
+        ));
   }
 }
 

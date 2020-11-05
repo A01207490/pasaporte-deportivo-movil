@@ -17,33 +17,15 @@ class _PasaporteState extends State<Pasaporte> {
   List data;
   DataBaseHelper databaseHelper = new DataBaseHelper();
 
-  Future<List> getData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final key = 'token';
-    final token = prefs.get(key) ?? 0;
-    Map param = {'token': '$token'};
-    var response =
-        await http.post("http://pasaportedeportivoitesm.com/api/getSessions", body: param);
-    if (response.statusCode == 200) {
-      print(json.decode(response.body));
-      return json.decode(response.body);
-    } else {
-      print(response.statusCode);
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    this.getData();
-    databaseHelper.getSessions();
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        backgroundColor: Colors.indigo[900],
         title: new Text("Pasaporte"),
         actions: <Widget>[
           FlatButton(
@@ -61,7 +43,7 @@ class _PasaporteState extends State<Pasaporte> {
         ],
       ),
       body: new FutureBuilder<List>(
-        future: getData(),
+        future: databaseHelper.getSessions(),
         builder: (context, snapshot) {
           if (snapshot.hasError) print(snapshot.error);
           return snapshot.hasData
