@@ -19,12 +19,28 @@ class _PasaporteState extends State<Pasaporte> {
   List data;
   int sessions;
   DataBaseHelper databaseHelper = new DataBaseHelper();
+  double _sessionsCount;
 
   @override
   void initState() {
     super.initState();
-    //databaseHelper.refresh();
+    getSessionsCount();
   }
+
+  Future<void> getSessionsCount() async {
+    var v = await databaseHelper.fetchSessionsCount();
+    setState(() {
+      _sessionsCount = v;
+    });
+  }
+
+  void _updateSessionsCount(double v){
+    setState(() {
+      _sessionsCount = v;
+    });
+    print(_sessionsCount);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +70,7 @@ class _PasaporteState extends State<Pasaporte> {
               ? new ItemList(
                   list: snapshot.data,
                 )
+
               : new Center(
                   child: new CircularProgressIndicator(),
                 );
@@ -62,7 +79,7 @@ class _PasaporteState extends State<Pasaporte> {
       bottomNavigationBar: Container(
           height: 60,
           child: GFProgressBar(
-              percentage: 0.9,
+              percentage: _sessionsCount == null ? 0 : _sessionsCount,
               backgroundColor: Colors.black26,
               progressBarColor: Colors.amber))
     );

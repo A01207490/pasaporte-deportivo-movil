@@ -31,21 +31,25 @@ class DataBaseHelper {
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       print(jsonResponse);
-      sessions = jsonResponse.length.toDouble();
-
+      sessions = jsonResponse.length.toDouble()/30;
       print('Number of sessions: ' + sessions.toString());
       return jsonResponse;
     } else {
+      print("Could not get sessions.");
       print(response.statusCode);
       return json.decode(response.body);
     }
+  }
+
+  Future<double> fetchSessionsCount(){
+    return Future.delayed(Duration(seconds: 2), () => sessions);
   }
 
   refreshToken() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     final key = 'token';
     final token = sharedPreferences.get(key) ?? 0;
-    print('Token: ' + token.toString());
+    print('Refreshing old token: ' + token.toString());
     String url = "$serverUrl/refresh";
     var response = await http.post(
       url,
