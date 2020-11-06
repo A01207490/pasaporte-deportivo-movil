@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:getwidget/colors/gf_color.dart';
+import 'package:getwidget/components/progress_bar/gf_progress_bar.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -15,11 +17,13 @@ class Pasaporte extends StatefulWidget {
 
 class _PasaporteState extends State<Pasaporte> {
   List data;
+  int sessions;
   DataBaseHelper databaseHelper = new DataBaseHelper();
 
   @override
   void initState() {
     super.initState();
+    //databaseHelper.refresh();
   }
 
   @override
@@ -55,7 +59,28 @@ class _PasaporteState extends State<Pasaporte> {
                 );
         },
       ),
+      bottomNavigationBar: Container(
+          height: 60,
+          child: GFProgressBar(
+              percentage: 0.9,
+              backgroundColor: Colors.black26,
+              progressBarColor: Colors.amber))
     );
+  }
+}
+
+class ProgressBar extends StatelessWidget {
+  final double sessions;
+  ProgressBar({this.sessions});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        height: 60,
+        child: GFProgressBar(
+            percentage: sessions,
+            backgroundColor: Colors.black26,
+            progressBarColor: Colors.amber));
   }
 }
 

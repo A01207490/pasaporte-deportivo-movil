@@ -1,30 +1,92 @@
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 class DataBaseHelper {
-  String serverUrl = "http://pasaportedeportivoitesm.com/api";
+  String serverUrl = "http://10.0.0.4:8000/api";
   String serverUrlproducts = "http://pasaportedeportivoitesm.com//api/products";
 
   var status;
   var token;
+  var sessions;
 
   Future<List> getSessions() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     final key = 'token';
-    final token = prefs.get(key) ?? 0;
-    Map param = {'token': '$token'};
+    final token = sharedPreferences.get(key) ?? 0;
+    refreshToken();
     String url = "$serverUrl/getSessions";
     var response = await http.post(
         url,
-        body: param);
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+    //var response = await http.post(url, body: param);
     print(url);
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
+      sessions = jsonResponse.length.toDouble();
+
+      print('Number of sessions: ' + sessions.toString());
+      return jsonResponse;
+    } else {
+      print(response.statusCode);
+      return json.decode(response.body);
+    }
+  }
+
+  refreshToken() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    final key = 'token';
+    final token = sharedPreferences.get(key) ?? 0;
+    print('Token: ' + token.toString());
+    String url = "$serverUrl/refresh";
+    var response = await http.post(
+      url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      if (jsonResponse != null) {
+        print(jsonResponse['access_token']);
+        sharedPreferences.setString("token", jsonResponse['access_token']);
+      }
+    } else {
+      print("Failure");
+      print(response.body);
+    }
+  }
+
+  void registerSession(String clase_id) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var coach_nomina = await FlutterBarcodeScanner.scanBarcode(
+        "#000000", "Cancel", true, ScanMode.QR);
+    final key = 'token';
+    final token = sharedPreferences.get(key) ?? 0;
+    print(coach_nomina);
+    print(clase_id);
+    print(token);
+    Map param = {
+      'token': '$token',
+      'clase_id': '$clase_id',
+      'coach_nomina': '$coach_nomina'
+    };
+    String url = "$serverUrl/registerSession";
+    var response = await http.post(url, body: param);
     if (response.statusCode == 200) {
       print(json.decode(response.body));
       return json.decode(response.body);
     } else {
       print(response.statusCode);
-      return json.decode(response.body);
     }
   }
 

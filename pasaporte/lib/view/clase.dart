@@ -1,13 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:getwidget/colors/gf_color.dart';
+import 'package:getwidget/components/progress_bar/gf_progress_bar.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:pasaporte/view/detailPasaporte.dart';
-import 'package:pasaporte/view/pasaporte.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:pasaporte/view/pasaporte.dart';
+import 'package:pasaporte/controllers/databasehelpers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Clase extends StatefulWidget {
@@ -62,33 +61,8 @@ class _ClaseState extends State<Clase> {
 
 class ItemList extends StatelessWidget {
   final List list;
-
+  DataBaseHelper databaseHelper = new DataBaseHelper();
   ItemList({this.list});
-
-  void _registerClass(String clase_id) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var coach_nomina = await FlutterBarcodeScanner.scanBarcode(
-        "#000000", "Cancel", true, ScanMode.QR);
-    final key = 'token';
-    final token = sharedPreferences.get(key) ?? 0;
-    print(coach_nomina);
-    print(clase_id);
-    print(token);
-    Map param = {
-      'token': '$token',
-      'clase_id': '$clase_id',
-      'coach_nomina': '$coach_nomina'
-    };
-    var response = await http.post(
-        "http://pasaportedeportivoitesm.com/api/registerSession",
-        body: param);
-    if (response.statusCode == 200) {
-      print(json.decode(response.body));
-      return json.decode(response.body);
-    } else {
-      print(response.statusCode);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +74,11 @@ class ItemList extends StatelessWidget {
               title: new Text(
             'No hay clases disponibles.',
           )),
+          GFProgressBar(
+              percentage: 0.9,
+              backgroundColor : Colors.black26,
+              progressBarColor: GFColors.DANGER
+          )
         ],
       );
 
@@ -108,7 +87,7 @@ class ItemList extends StatelessWidget {
       itemBuilder: (context, i) {
         return new Container(
           child: new GestureDetector(
-            onTap: () => _registerClass(list[i]['clase_id'].toString()),
+            onTap: () => databaseHelper.registerSession(list[i]['clase_id'].toString()),
             child: new Card(
               child: new ListTile(
                 leading: Column(
