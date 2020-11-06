@@ -26,8 +26,8 @@ class DataBaseHelper {
           'Accept': 'application/json',
           'Authorization': 'Bearer $token',
         });
-    //var response = await http.post(url, body: param);
     print(url);
+
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       print(jsonResponse);
@@ -35,14 +35,29 @@ class DataBaseHelper {
       print('Number of sessions: ' + sessions.toString());
       return jsonResponse;
     } else {
-      print("Could not get sessions.");
+      print("Could not get retrieve sessions.");
       print(response.statusCode);
+      return [];
+    }
+  }
+
+  Future<List> getCurrentClasses() async {
+    String url = "$serverUrl/getCurrentClasses";
+    final response = await http
+        .get(url);
+    if (response.statusCode == 200) {
+      print(json.decode(response.body));
+
+      print('Hello');
       return json.decode(response.body);
+    } else {
+      print(response.statusCode);
+      return [];
     }
   }
 
   Future<double> fetchSessionsCount(){
-    return Future.delayed(Duration(seconds: 2), () => sessions);
+    return Future.delayed(Duration(seconds: 1), () => sessions);
   }
 
   refreshToken() async {

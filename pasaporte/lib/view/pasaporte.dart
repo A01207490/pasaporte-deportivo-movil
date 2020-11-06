@@ -20,6 +20,7 @@ class _PasaporteState extends State<Pasaporte> {
   int sessions;
   DataBaseHelper databaseHelper = new DataBaseHelper();
   double _sessionsCount;
+  String _sessionsCountString;
 
   @override
   void initState() {
@@ -34,70 +35,75 @@ class _PasaporteState extends State<Pasaporte> {
     });
   }
 
-  void _updateSessionsCount(double v){
+  void _updateSessionsCount(double v) {
     setState(() {
       _sessionsCount = v;
+      _sessionsCountString = _sessionsCount.toString();
     });
     print(_sessionsCount);
   }
 
-
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("Pasaporte"),
-        actions: <Widget>[
-          FlatButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Clase()),
-              );
-            },
-            child: Icon(
-              Icons.add_circle_outline,
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
-      body: new FutureBuilder<List>(
-        future: databaseHelper.getSessions(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) print(snapshot.error);
-          return snapshot.hasData
-              ? new ItemList(
-                  list: snapshot.data,
-                )
-
-              : new Center(
-                  child: new CircularProgressIndicator(),
+        appBar: new AppBar(
+          title: new Text("Pasaporte"),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Clase()),
                 );
-        },
-      ),
-      bottomNavigationBar: Container(
-          height: 60,
-          child: GFProgressBar(
-              percentage: _sessionsCount == null ? 0 : _sessionsCount,
-              backgroundColor: Colors.black26,
-              progressBarColor: Colors.amber))
+              },
+              child: Icon(
+                Icons.add_circle_outline,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+        body: new FutureBuilder<List>(
+          future: databaseHelper.getSessions(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) print(snapshot.error);
+            return snapshot.hasData
+                ? new ItemList(
+                    list: snapshot.data,
+                  )
+                : new Center(
+                    child: new CircularProgressIndicator(),
+                  );
+          },
+        ),
+        bottomNavigationBar:
+        new Container(
+          padding: const EdgeInsets.all(10.0),
+          height: 100,
+          child: new ListView(
+            children: <Widget>[
+              new ListTile(
+                  title: new Text(
+                      'Sesiones completadas.',
+                      style:
+                      new TextStyle(fontSize: 14.0, color: Colors.blueGrey))),
+            new GFProgressBar(
+                percentage: _sessionsCount == null ? 0 : _sessionsCount,
+                lineHeight: 15,
+                padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+                child: const Padding(
+                  padding: EdgeInsets.only(right: 5),
+                ),
+                animation: true,
+                backgroundColor: Colors.black26,
+                progressBarColor: Colors.blueAccent[200])
+            ],
+          ),
+        ),
+
+
+
     );
-  }
-}
-
-class ProgressBar extends StatelessWidget {
-  final double sessions;
-  ProgressBar({this.sessions});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        height: 60,
-        child: GFProgressBar(
-            percentage: sessions,
-            backgroundColor: Colors.black26,
-            progressBarColor: Colors.amber));
   }
 }
 
@@ -108,6 +114,17 @@ class ItemList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (list.length == 0)
+      return new ListView(
+        padding: const EdgeInsets.all(20.0),
+        children: <Widget>[
+          new ListTile(
+              title: new Text(
+            'No hay sesiones registradas disponibles.',
+          )),
+        ],
+      );
+
     return new ListView.builder(
       itemCount: list == null ? 0 : list.length,
       itemBuilder: (context, i) {

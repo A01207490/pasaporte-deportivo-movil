@@ -16,6 +16,7 @@ class Clase extends StatefulWidget {
 
 class _ClaseState extends State<Clase> {
   List data;
+  DataBaseHelper databaseHelper = new DataBaseHelper();
 
   Future<List> getData() async {
     final response = await http
@@ -31,7 +32,6 @@ class _ClaseState extends State<Clase> {
   @override
   void initState() {
     super.initState();
-    //data = this.getData();
     this.getData();
   }
 
@@ -43,7 +43,7 @@ class _ClaseState extends State<Clase> {
         title: new Text("Clases"),
       ),
       body: new FutureBuilder<List>(
-        future: getData(),
+        future: databaseHelper.getCurrentClasses(),
         builder: (context, snapshot) {
           if (snapshot.hasError) print(snapshot.error);
           return snapshot.hasData
@@ -62,6 +62,7 @@ class _ClaseState extends State<Clase> {
 class ItemList extends StatelessWidget {
   final List list;
   DataBaseHelper databaseHelper = new DataBaseHelper();
+
   ItemList({this.list});
 
   @override
@@ -71,14 +72,9 @@ class ItemList extends StatelessWidget {
         padding: const EdgeInsets.all(20.0),
         children: <Widget>[
           new ListTile(
-              title: new Text(
-            'No hay clases disponibles.',
-          )),
-          GFProgressBar(
-              percentage: 0.9,
-              backgroundColor : Colors.black26,
-              progressBarColor: GFColors.DANGER
-          )
+              title: new Text('Por el momento no hay clases disponibles.',
+                  style:
+                      new TextStyle(fontSize: 14.0, color: Colors.blueGrey))),
         ],
       );
 
@@ -87,7 +83,8 @@ class ItemList extends StatelessWidget {
       itemBuilder: (context, i) {
         return new Container(
           child: new GestureDetector(
-            onTap: () => databaseHelper.registerSession(list[i]['clase_id'].toString()),
+            onTap: () =>
+                databaseHelper.registerSession(list[i]['clase_id'].toString()),
             child: new Card(
               child: new ListTile(
                 leading: Column(
