@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:pasaporte/controllers/databasehelpers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
@@ -14,6 +15,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
+  DataBaseHelper databaseHelper = new DataBaseHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              colors: [Colors.blue, Colors.teal],
+              colors: [Colors.blue, Color(0xFF0033A0)],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter),
         ),
@@ -44,19 +46,16 @@ class _LoginPageState extends State<LoginPage> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     Map data = {'email': email, 'password': pass};
     var jsonResponse = null;
-
+    String url = databaseHelper.serverUrl.toString() + "/login";
     var response =
-        await http.post("http://10.0.0.4:8000/api/login", body: data);
+        await http.post(url, body: data);
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      print(jsonResponse);
       if (jsonResponse != null) {
         setState(() {
           _isLoading = false;
         });
-        sharedPreferences.setString("token", jsonResponse['token']);
+        sharedPreferences.setString("token", jsonResponse['access_token']);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (BuildContext context) => MainPage()),
             (Route<dynamic> route) => false);
@@ -72,9 +71,9 @@ class _LoginPageState extends State<LoginPage> {
   Container buttonSection() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 40.0,
-      padding: EdgeInsets.symmetric(horizontal: 15.0),
-      margin: EdgeInsets.only(top: 15.0),
+      height: 45.0,
+      padding: EdgeInsets.symmetric(horizontal: 50.0),
+      margin: EdgeInsets.only(top: 25.0),
       child: RaisedButton(
         onPressed: emailController.text == "" || passwordController.text == ""
             ? null
@@ -85,8 +84,8 @@ class _LoginPageState extends State<LoginPage> {
                 signIn(emailController.text, passwordController.text);
               },
         elevation: 0.0,
-        color: Colors.purple,
-        child: Text("Sign In", style: TextStyle(color: Colors.white70)),
+        color: Colors.blue,
+        child: Text("Ingresar", style: TextStyle(color: Colors.white70)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       ),
     );
@@ -97,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Container textSection() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+      padding: EdgeInsets.symmetric(horizontal: 50.0, vertical: 20.0),
       child: Column(
         children: <Widget>[
           TextFormField(
@@ -106,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
             style: TextStyle(color: Colors.white70),
             decoration: InputDecoration(
               icon: Icon(Icons.email, color: Colors.white70),
-              hintText: "Email",
+              hintText: "Correo",
               border: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.white70)),
               hintStyle: TextStyle(color: Colors.white70),
@@ -120,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
             style: TextStyle(color: Colors.white70),
             decoration: InputDecoration(
               icon: Icon(Icons.lock, color: Colors.white70),
-              hintText: "Password",
+              hintText: "Contraseña",
               border: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.white70)),
               hintStyle: TextStyle(color: Colors.white70),
@@ -133,12 +132,14 @@ class _LoginPageState extends State<LoginPage> {
 
   Container headerSection() {
     return Container(
-      margin: EdgeInsets.only(top: 50.0),
-      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
-      child: Text("Pasaporte deportivo",
+      margin: EdgeInsets.only(top: 100.0),
+      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 50.0),
+      child: Text("Pasaporte Deportivo",
+          textAlign: TextAlign.center,
           style: TextStyle(
+
               color: Colors.white70,
-              fontSize: 40.0,
+              fontSize: 30.0,
               fontWeight: FontWeight.bold)),
     );
   }
