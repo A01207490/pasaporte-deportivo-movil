@@ -13,79 +13,100 @@ class DataBaseHelper {
   var token;
   var sessions;
 
-  Future<List> getSessions() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    final key = 'token';
-    final token = sharedPreferences.get(key) ?? 0;
-    refreshToken();
-    String url = "$serverUrl/getSessions";
-    var response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token',
-        });
-    print(url);
-
-    if (response.statusCode == 200) {
-      var jsonResponse = json.decode(response.body);
-      print(jsonResponse);
-      sessions = jsonResponse.length.toDouble()/30;
-      print('Number of sessions: ' + sessions.toString());
-      return jsonResponse;
-    } else {
-      print("Could not get retrieve sessions.");
-      print(response.statusCode);
-      return [];
-    }
-  }
-
-  Future<List> getCurrentClasses() async {
-    String url = "$serverUrl/getCurrentClasses";
-    final response = await http
-        .get(url);
-    if (response.statusCode == 200) {
-      print(json.decode(response.body));
-
-      print('Hello');
-      return json.decode(response.body);
-    } else {
-      print(response.statusCode);
-      return [];
-    }
-  }
-
-  Future<double> fetchSessionsCount(){
+  Future<double> fetchSessionsCount() {
     return Future.delayed(Duration(seconds: 1), () => sessions);
   }
 
-  refreshToken() async {
+  Future<List> getSession() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     final key = 'token';
     final token = sharedPreferences.get(key) ?? 0;
     print('Refreshing old token: ' + token.toString());
     String url = "$serverUrl/refresh";
-    var response = await http.post(
-      url,
-        headers: {
+    var response = await http.post(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      if (jsonResponse != null) {
+        print("Successfully returned token.");
+        print(jsonResponse['access_token']);
+        sharedPreferences.setString("token", jsonResponse['access_token']);
+        final token = sharedPreferences.get(key) ?? 0;
+        String url = "$serverUrl/getSession";
+        var response = await http.get(url, headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
           'Authorization': 'Bearer $token',
         });
-    if (response.statusCode == 200) {
-      var jsonResponse = json.decode(response.body);
-      if (jsonResponse != null) {
-        print(jsonResponse['access_token']);
-        sharedPreferences.setString("token", jsonResponse['access_token']);
+        if (response.statusCode == 200) {
+          var jsonResponse = json.decode(response.body);
+          print("Successfully retrieved sessions");
+          print(jsonResponse);
+          sessions = jsonResponse.length.toDouble() / 30;
+          print('Percentage of completed sessions: ' + sessions.toString());
+          return jsonResponse;
+        } else {
+          print("Could not retrieve session");
+          print(response.statusCode);
+          return [];
+        }
       }
+      print("API returned an empty response");
+      print(response.statusCode);
+      return [];
     } else {
-      print("Failure");
-      print(response.body);
+      print("Could not refresh token");
+      print(response.statusCode);
+      return [];
     }
   }
 
-  void registerSession(String clase_id) async {
+  Future<List> getClass() async {
+    String url = "$serverUrl/getClass";
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      print("Successfully retrieved class");
+      var jsonResponse = json.decode(response.body);
+      return jsonResponse;
+    } else {
+      print("Could not retrieve class");
+      print(response.statusCode);
+      return [];
+    }
+  }
+
+  Future<List> getAnnouncement() async {
+    String url = "$serverUrl/getAnnouncement";
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      print("Successfully retrieved announcement");
+      var jsonResponse = json.decode(response.body);
+      return jsonResponse;
+    } else {
+      print("Could not retrieve announcement");
+      print(response.statusCode);
+      return [];
+    }
+  }
+
+  Future<List> getClassCurrent() async {
+    String url = "$serverUrl/getClassCurrent";
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      print("Successfully retrieved class current");
+      var jsonResponse = json.decode(response.body);
+      return jsonResponse;
+    } else {
+      print("Could not retrieve class current");
+      print(response.statusCode);
+      return [];
+    }
+  }
+
+  Future<void> createSession(String clase_id) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var coach_nomina = await FlutterBarcodeScanner.scanBarcode(
         "#000000", "Cancel", true, ScanMode.QR);
@@ -95,17 +116,21 @@ class DataBaseHelper {
     print(clase_id);
     print(token);
     Map param = {
-      'token': '$token',
       'clase_id': '$clase_id',
       'coach_nomina': '$coach_nomina'
     };
-    String url = "$serverUrl/registerSession";
-    var response = await http.post(url, body: param);
+    String url = "$serverUrl/createSession";
+    var response = await http.post(url, body: param, headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    var jsonResponse = json.decode(response.body);
     if (response.statusCode == 200) {
-      print(json.decode(response.body));
-      return json.decode(response.body);
-    } else {
+      print("Successfully registered class current");
+      return 1;
+    } else if (response.statusCode == 403) {
       print(response.statusCode);
+      return 0;
     }
   }
 

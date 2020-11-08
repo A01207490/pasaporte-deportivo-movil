@@ -7,43 +7,29 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:pasaporte/controllers/databasehelpers.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class Clase extends StatefulWidget {
+class SessionCreate extends StatefulWidget {
   @override
-  _ClaseState createState() => _ClaseState();
+  _SessionCreateState createState() => _SessionCreateState();
 }
 
-class _ClaseState extends State<Clase> {
+class _SessionCreateState extends State<SessionCreate> {
   List data;
   DataBaseHelper databaseHelper = new DataBaseHelper();
-
-  Future<List> getData() async {
-    final response = await http
-        .get("http://pasaportedeportivoitesm.com/api/getCurrentClasses");
-    if (response.statusCode == 200) {
-      print(json.decode(response.body));
-      return json.decode(response.body);
-    } else {
-      print(response.statusCode);
-    }
-  }
 
   @override
   void initState() {
     super.initState();
-    this.getData();
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        backgroundColor: Colors.indigo[900],
-        title: new Text("Clases"),
+        title: new Text("Registrar sesión"),
       ),
       body: new FutureBuilder<List>(
-        future: databaseHelper.getCurrentClasses(),
+        future: databaseHelper.getClassCurrent(),
         builder: (context, snapshot) {
           if (snapshot.hasError) print(snapshot.error);
           return snapshot.hasData
@@ -84,15 +70,15 @@ class ItemList extends StatelessWidget {
         return new Container(
           child: new GestureDetector(
             onTap: () =>
-                databaseHelper.registerSession(list[i]['clase_id'].toString()),
+                databaseHelper.createSession(list[i]['clase_id'].toString()),
             child: new Card(
               child: new ListTile(
                 leading: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Icon(
-                      Icons.check,
-                      color: Colors.blueGrey,
+                      Icons.class__rounded,
+                      color: Color(0xFF0075BC),
                     ),
                   ],
                 ),
@@ -101,7 +87,7 @@ class ItemList extends StatelessWidget {
                   children: <Widget>[
                     Icon(
                       Icons.add_circle_outline,
-                      color: Colors.blueGrey,
+                      color: Color(0xFF0075BC),
                     ),
                   ],
                 ),

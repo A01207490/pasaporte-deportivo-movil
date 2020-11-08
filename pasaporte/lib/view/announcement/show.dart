@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
 
-class DetailAnuncio extends StatefulWidget {
+class AnnouncementShow extends StatefulWidget {
 
   List list;
   int index;
-  DetailAnuncio({this.index,this.list});
+  AnnouncementShow({this.index,this.list});
 
   @override
-  _DetailAnuncioState createState() => _DetailAnuncioState();
+  _AnnouncementShowState createState() => _AnnouncementShowState();
 }
 
-class _DetailAnuncioState extends State<DetailAnuncio> {
+class _AnnouncementShowState extends State<AnnouncementShow> {
 
-  //https://medium.com/flutter-community/working-with-dates-in-dart-e81c70911811
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-          backgroundColor: Colors.indigo[900],
           title: new Text("${widget.list[widget.index]['anuncio_titulo']}")
       ),
       body: new Container(

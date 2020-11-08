@@ -1,21 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:getwidget/colors/gf_color.dart';
 import 'package:getwidget/components/progress_bar/gf_progress_bar.dart';
 import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:pasaporte/controllers/databasehelpers.dart';
-import 'package:pasaporte/view/detailPasaporte.dart';
-import 'package:pasaporte/view/clase.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pasaporte/view/session/show.dart';
+import 'package:pasaporte/view/session/create.dart';
 
-class Pasaporte extends StatefulWidget {
+class SessionIndex extends StatefulWidget {
   @override
-  _PasaporteState createState() => _PasaporteState();
+  _SessionIndexState createState() => _SessionIndexState();
 }
 
-class _PasaporteState extends State<Pasaporte> {
+class _SessionIndexState extends State<SessionIndex> {
   List data;
   int sessions;
   DataBaseHelper databaseHelper = new DataBaseHelper();
@@ -53,7 +49,7 @@ class _PasaporteState extends State<Pasaporte> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Clase()),
+                  MaterialPageRoute(builder: (context) => SessionCreate()),
                 );
               },
               child: Icon(
@@ -64,7 +60,7 @@ class _PasaporteState extends State<Pasaporte> {
           ],
         ),
         body: new FutureBuilder<List>(
-          future: databaseHelper.getSessions(),
+          future: databaseHelper.getSession(),
           builder: (context, snapshot) {
             if (snapshot.hasError) print(snapshot.error);
             return snapshot.hasData
@@ -96,7 +92,7 @@ class _PasaporteState extends State<Pasaporte> {
                 ),
                 animation: true,
                 backgroundColor: Colors.black26,
-                progressBarColor: Colors.blueAccent[200])
+                progressBarColor: Color(0xFF0075BC))
             ],
           ),
         ),
@@ -132,7 +128,7 @@ class ItemList extends StatelessWidget {
           child: new GestureDetector(
             onTap: () => Navigator.of(context).push(
               new MaterialPageRoute(
-                  builder: (BuildContext context) => new DetailPasaporte(
+                  builder: (BuildContext context) => new SessionShow(
                         list: list,
                         index: i,
                       )),
@@ -144,7 +140,7 @@ class ItemList extends StatelessWidget {
                   children: <Widget>[
                     Icon(
                       Icons.check,
-                      color: Colors.blueGrey,
+                      color: Color(0xFF0075BC),
                     ),
                   ],
                 ),

@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:pasaporte/view/detailPasaporte.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:pasaporte/view/session/show.dart';
 
 class ListProducts extends StatefulWidget {
   @override
@@ -64,7 +64,7 @@ class ItemList extends StatelessWidget {
           child: new GestureDetector(
             onTap: () => Navigator.of(context).push(
                   new MaterialPageRoute(
-                      builder: (BuildContext context) => new DetailPasaporte(
+                      builder: (BuildContext context) => new SessionShow(
                             list: list,
                             index: i,
                           )),

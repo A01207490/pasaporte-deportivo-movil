@@ -25,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              colors: [Colors.blue, Colors.teal],
+              colors: [Colors.blue, Color(0xFF0033A0)],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter),
         ),
@@ -71,9 +71,9 @@ class _LoginPageState extends State<LoginPage> {
   Container buttonSection() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 40.0,
-      padding: EdgeInsets.symmetric(horizontal: 15.0),
-      margin: EdgeInsets.only(top: 15.0),
+      height: 45.0,
+      padding: EdgeInsets.symmetric(horizontal: 50.0),
+      margin: EdgeInsets.only(top: 25.0),
       child: RaisedButton(
         onPressed: emailController.text == "" || passwordController.text == ""
             ? null
@@ -84,8 +84,8 @@ class _LoginPageState extends State<LoginPage> {
                 signIn(emailController.text, passwordController.text);
               },
         elevation: 0.0,
-        color: Colors.purple,
-        child: Text("Sign In", style: TextStyle(color: Colors.white70)),
+        color: Colors.blue,
+        child: Text("Ingresar", style: TextStyle(color: Colors.white70)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       ),
     );
@@ -96,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Container textSection() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+      padding: EdgeInsets.symmetric(horizontal: 50.0, vertical: 20.0),
       child: Column(
         children: <Widget>[
           TextFormField(
@@ -105,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
             style: TextStyle(color: Colors.white70),
             decoration: InputDecoration(
               icon: Icon(Icons.email, color: Colors.white70),
-              hintText: "Email",
+              hintText: "Correo",
               border: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.white70)),
               hintStyle: TextStyle(color: Colors.white70),
@@ -119,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
             style: TextStyle(color: Colors.white70),
             decoration: InputDecoration(
               icon: Icon(Icons.lock, color: Colors.white70),
-              hintText: "Password",
+              hintText: "Contraseña",
               border: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.white70)),
               hintStyle: TextStyle(color: Colors.white70),
@@ -132,12 +132,14 @@ class _LoginPageState extends State<LoginPage> {
 
   Container headerSection() {
     return Container(
-      margin: EdgeInsets.only(top: 50.0),
-      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
-      child: Text("Pasaporte deportivo",
+      margin: EdgeInsets.only(top: 100.0),
+      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 50.0),
+      child: Text("Pasaporte Deportivo",
+          textAlign: TextAlign.center,
           style: TextStyle(
+
               color: Colors.white70,
-              fontSize: 40.0,
+              fontSize: 30.0,
               fontWeight: FontWeight.bold)),
     );
   }
