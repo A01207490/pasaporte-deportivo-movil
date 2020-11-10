@@ -96,18 +96,13 @@ class _SessionIndexState extends State<SessionIndex> {
             ],
           ),
         ),
-
-
-
     );
   }
 }
 
 class ItemList extends StatelessWidget {
   final List list;
-
   ItemList({this.list});
-
   @override
   Widget build(BuildContext context) {
     if (list.length == 0)
