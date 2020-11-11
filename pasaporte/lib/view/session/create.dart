@@ -8,6 +8,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:pasaporte/controllers/databasehelpers.dart';
 
+import 'index.dart';
+
 class SessionCreate extends StatefulWidget {
   @override
   _SessionCreateState createState() => _SessionCreateState();
@@ -51,6 +53,61 @@ class ItemList extends StatelessWidget {
 
   ItemList({this.list});
 
+  Future<void> _successDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Éxito'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('La sesión ha sido registrada.', style: new TextStyle(fontSize: 14.0, color: Colors.blueGrey),),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Continuar'),
+              onPressed: () => Navigator.of(context).pushReplacement(new MaterialPageRoute(
+                builder: (BuildContext context) => SessionIndex(),
+              )),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _failureDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('La sesión no pudo ser registrada.', style: new TextStyle(fontSize: 14.0, color: Colors.blueGrey),),
+
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Continuar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (list.length == 0)
@@ -69,8 +126,24 @@ class ItemList extends StatelessWidget {
       itemBuilder: (context, i) {
         return new Container(
           child: new GestureDetector(
-            onTap: () =>
-                databaseHelper.createSession(list[i]['clase_id'].toString()),
+            onTap: () {
+              final response = databaseHelper.createSession(list[i]['clase_id'].toString());
+              response.then((value){
+                print("Fuck");
+                print(value.toString());
+
+                if(value == 1){
+                  print("Success");
+                  _successDialog(context);
+                }else if(value == 2){
+                  print("Failure");
+                  _failureDialog(context);
+                }else if(value == 0){
+                  print("Regreso otra cosa");
+                }
+
+              });
+            },
             child: new Card(
               child: new ListTile(
                 leading: Column(

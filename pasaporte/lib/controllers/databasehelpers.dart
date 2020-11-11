@@ -102,17 +102,17 @@ class DataBaseHelper {
     }
   }
 
-  Future<void> createSession(String clase_id) async {
+  Future<int> createSession(String claseId) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var coach_nomina = await FlutterBarcodeScanner.scanBarcode(
         "#000000", "Cancel", true, ScanMode.QR);
     final key = 'token';
     final token = sharedPreferences.get(key) ?? 0;
     print(coach_nomina);
-    print(clase_id);
+    print(claseId);
     print(token);
     Map param = {
-      'clase_id': '$clase_id',
+      'clase_id': '$claseId',
       'coach_nomina': '$coach_nomina'
     };
     String url = "$serverUrl/createSession";
@@ -122,12 +122,13 @@ class DataBaseHelper {
     });
     var jsonResponse = json.decode(response.body);
     if (response.statusCode == 200) {
-      print("Successfully registered class current");
+      print("Successfully registered class");
       return 1;
-    } else if (response.statusCode == 403) {
+    } else if (response.statusCode == 401) {
       print(response.statusCode);
-      return 0;
+      return 2;
     }
+    return 0;
   }
 
   //create function for login
