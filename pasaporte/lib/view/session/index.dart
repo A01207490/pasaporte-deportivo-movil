@@ -15,94 +15,93 @@ class _SessionIndexState extends State<SessionIndex> {
   List data;
   int sessions;
   DataBaseHelper databaseHelper = new DataBaseHelper();
-  double _sessionsCount;
-  String _sessionsCountString;
+  double _sessionsCount = 0.0;
 
   @override
   void initState() {
     super.initState();
-    getSessionsCount();
+    _sessionsCount = 0.0;
   }
 
-  Future<void> getSessionsCount() async {
-    var v = await databaseHelper.fetchSessionsCount();
-    setState(() {
-      _sessionsCount = v;
-    });
-  }
-
-  void _updateSessionsCount(double v) {
-    setState(() {
-      _sessionsCount = v;
-      _sessionsCountString = _sessionsCount.toString();
-    });
-    print(_sessionsCount);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: new AppBar(
-          title: new Text("Pasaporte"),
-          actions: <Widget>[
-            FlatButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SessionCreate()),
-                );
-              },
-              child: Icon(
-                Icons.add_circle_outline,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-        body: new FutureBuilder<List>(
-          future: databaseHelper.getSession(),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) print(snapshot.error);
-            return snapshot.hasData
-                ? new ItemList(
-                    list: snapshot.data,
-                  )
-                : new Center(
-                    child: new CircularProgressIndicator(),
-                  );
-          },
-        ),
-        bottomNavigationBar:
-        new Container(
-          padding: const EdgeInsets.all(10.0),
-          height: 100,
-          child: new ListView(
-            children: <Widget>[
-              new ListTile(
-                  title: new Text(
-                      'Sesiones completadas.',
-                      style:
-                      new TextStyle(fontSize: 14.0, color: Colors.blueGrey))),
+  sessionProgress() {
+    return new Container(
+        color: Color(0xFF071A2D),
+        padding: const EdgeInsets.all(10.0),
+        height: 100,
+        child: ListView(
+          children: <Widget>[
+            new ListTile(
+                title: new Text(
+                    'Sesiones completadas: ' +
+                        (_sessionsCount).round().toString() +
+                        '/30',
+                    style: new TextStyle(fontSize: 14.0, color: Colors.white))),
             new GFProgressBar(
-                percentage: _sessionsCount == null ? 0 : _sessionsCount,
+                //percentage: _sessionsCount == null ? 0.0 : _sessionsCount,
+                percentage: _sessionsCount / 30,
                 lineHeight: 15,
                 padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
                 child: const Padding(
                   padding: EdgeInsets.only(right: 5),
                 ),
                 animation: true,
-                backgroundColor: Colors.black26,
-                progressBarColor: Color(0xFF0075BC))
-            ],
+                backgroundColor: Colors.white,
+                progressBarColor: Color(0xFF0075BC)),
+          ],
+        ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("Pasaporte"),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SessionCreate()),
+              );
+            },
+            child: Icon(
+              Icons.add_circle_outline,
+              color: Colors.white,
+            ),
           ),
-        ),
+        ],
+      ),
+      body: new FutureBuilder<List>(
+        future: databaseHelper.getSession(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) print(snapshot.error);
+          return snapshot.hasData
+              ? new ItemList(
+                  list: snapshot.data,
+                )
+              : new Center(
+                  child: new CircularProgressIndicator(),
+                );
+        },
+      ),
+      bottomNavigationBar: StreamBuilder(
+          stream: databaseHelper.countController.stream,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return LinearProgressIndicator();
+            }
+            _sessionsCount = double.parse("${snapshot.data}");
+            return sessionProgress();
+          }),
     );
   }
 }
 
 class ItemList extends StatelessWidget {
   final List list;
+
   ItemList({this.list});
+
   @override
   Widget build(BuildContext context) {
     if (list.length == 0)

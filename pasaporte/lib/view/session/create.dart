@@ -18,10 +18,14 @@ class SessionCreate extends StatefulWidget {
 class _SessionCreateState extends State<SessionCreate> {
   List data;
   DataBaseHelper databaseHelper = new DataBaseHelper();
+  static bool isLoading;
+
+
 
   @override
   void initState() {
     super.initState();
+    isLoading = false;
   }
 
   @override
@@ -30,19 +34,21 @@ class _SessionCreateState extends State<SessionCreate> {
       appBar: new AppBar(
         title: new Text("Registrar sesión"),
       ),
-      body: new FutureBuilder<List>(
-        future: databaseHelper.getClassCurrent(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) print(snapshot.error);
-          return snapshot.hasData
-              ? new ItemList(
-                  list: snapshot.data,
-                )
-              : new Center(
-                  child: new CircularProgressIndicator(),
-                );
-        },
-      ),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator(backgroundColor: Colors.red,))
+          : new FutureBuilder<List>(
+              future: databaseHelper.getClassCurrent(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) print(snapshot.error);
+                return snapshot.hasData
+                    ? new ItemList(
+                        list: snapshot.data,
+                      )
+                    : new Center(
+                        child: new CircularProgressIndicator(),
+                      );
+              },
+            ),
     );
   }
 }
@@ -53,51 +59,36 @@ class ItemList extends StatelessWidget {
 
   ItemList({this.list});
 
-  Future<void> _successDialog(BuildContext context) async {
+  Future<void> _acceptDialog(
+    BuildContext context,
+    String title,
+    String body,
+  ) async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // user must tap button!
+      barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Éxito'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('La sesión ha sido registrada.', style: new TextStyle(fontSize: 14.0, color: Colors.blueGrey),),
-              ],
-            ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
           ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Continuar'),
-              onPressed: () => Navigator.of(context).pushReplacement(new MaterialPageRoute(
-                builder: (BuildContext context) => SessionIndex(),
+          title: Text(title,
+              style: new TextStyle(
+                fontSize: 18.0,
               )),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> _failureDialog(BuildContext context) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Error'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('La sesión no pudo ser registrada.', style: new TextStyle(fontSize: 14.0, color: Colors.blueGrey),),
-
+                Text(
+                  body,
+                  style: new TextStyle(fontSize: 14.0, color: Colors.blueGrey),
+                ),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Continuar'),
+              child: Text("Aceptar"),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -127,21 +118,30 @@ class ItemList extends StatelessWidget {
         return new Container(
           child: new GestureDetector(
             onTap: () {
-              final response = databaseHelper.createSession(list[i]['clase_id'].toString());
-              response.then((value){
-                print("Fuck");
+              setState(() {
+                _SessionCreateState.isLoading = false;
+              });
+              _SessionCreateState.isLoading = true;
+              print(_SessionCreateState.isLoading);
+              final response =
+                  databaseHelper.createSession(list[i]['clase_id'].toString());
+              response.then((value) {
                 print(value.toString());
-
-                if(value == 1){
-                  print("Success");
-                  _successDialog(context);
-                }else if(value == 2){
-                  print("Failure");
-                  _failureDialog(context);
-                }else if(value == 0){
-                  print("Regreso otra cosa");
+                _SessionCreateState.isLoading = false;
+                print(_SessionCreateState.isLoading);
+                if (value == 1) {
+                  _acceptDialog(
+                      context, "Excelente", "La sesión ha sido registrada");
+                } else if (value == 2) {
+                  _acceptDialog(
+                      context, "Oops", "El código QR del coach es incorrecto.");
+                } else if (value == 3) {
+                  _acceptDialog(context, "Oops",
+                      "Ya se ha registrado una sesión el día de hoy.");
+                } else if (value == 4) {
+                  _acceptDialog(context, "Oops",
+                      "El código QR no corresponde a ningun coach.");
                 }
-
               });
             },
             child: new Card(

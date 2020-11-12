@@ -56,6 +56,8 @@ class _LoginPageState extends State<LoginPage> {
           _isLoading = false;
         });
         sharedPreferences.setString("token", jsonResponse['access_token']);
+        sharedPreferences.setString("email", email);
+        sharedPreferences.setString("pass", pass);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (BuildContext context) => MainPage()),
             (Route<dynamic> route) => false);

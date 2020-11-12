@@ -1,60 +1,36 @@
+import 'dart:async';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 class DataBaseHelper {
-  String serverUrl = "http://pasaportedeportivoitesm.com/api";
+  String serverUrl = "http://10.0.0.4:8000/api";
   var status;
   var token;
   var sessions;
-
-  Future<double> fetchSessionsCount() {
-    return Future.delayed(Duration(seconds: 1), () => sessions);
-  }
+  final StreamController countController = StreamController();
 
   Future<List> getSession() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    final key = 'token';
-    final token = sharedPreferences.get(key) ?? 0;
-    print('Refreshing old token: ' + token.toString());
-    String url = "$serverUrl/refresh";
-    var response = await http.post(url, headers: {
+    final token = sharedPreferences.get('token') ?? 0;
+    String url = "$serverUrl/getSession";
+    var response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
-      if (jsonResponse != null) {
-        print("Successfully returned token.");
-        print(jsonResponse['access_token']);
-        sharedPreferences.setString("token", jsonResponse['access_token']);
-        final token = sharedPreferences.get(key) ?? 0;
-        String url = "$serverUrl/getSession";
-        var response = await http.get(url, headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token',
-        });
-        if (response.statusCode == 200) {
-          var jsonResponse = json.decode(response.body);
-          print("Successfully retrieved sessions");
-          print(jsonResponse);
-          sessions = jsonResponse.length.toDouble() / 30;
-          print('Percentage of completed sessions: ' + sessions.toString());
-          return jsonResponse;
-        } else {
-          print("Could not retrieve session");
-          print(response.statusCode);
-          return [];
-        }
-      }
-      print("API returned an empty response");
-      print(response.statusCode);
-      return [];
+      print("Successfully retrieved sessions");
+      print(jsonResponse);
+      sessions = jsonResponse.length.toDouble();
+      print('Completed sessions: ' + sessions.toString());
+      countController.sink.add(sessions);
+      return jsonResponse;
     } else {
-      print("Could not refresh token");
+      print("Could not retrieve session");
       print(response.statusCode);
       return [];
     }
@@ -108,25 +84,26 @@ class DataBaseHelper {
         "#000000", "Cancel", true, ScanMode.QR);
     final key = 'token';
     final token = sharedPreferences.get(key) ?? 0;
-    print(coach_nomina);
-    print(claseId);
-    print(token);
-    Map param = {
-      'clase_id': '$claseId',
-      'coach_nomina': '$coach_nomina'
-    };
+    Map param = {'clase_id': '$claseId', 'coach_nomina': '$coach_nomina'};
     String url = "$serverUrl/createSession";
-    var response = await http.post(url, body: param, headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    var jsonResponse = json.decode(response.body);
-    if (response.statusCode == 200) {
-      print("Successfully registered class");
-      return 1;
-    } else if (response.statusCode == 401) {
-      print(response.statusCode);
-      return 2;
+    if (coach_nomina != (-1).toString()) {
+      var response = await http.post(url, body: param, headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        print("Successfully registered class");
+        return 1;
+      } else if (response.statusCode == 403) {
+        print("Invalid coach id");
+        return 2;
+      } else if (response.statusCode == 405) {
+        print("Cannot register more that one session a day");
+        return 3;
+      } else if (response.statusCode == 500) {
+        print("The QR code is not valid");
+        return 4;
+      }
     }
     return 0;
   }
@@ -140,12 +117,10 @@ class DataBaseHelper {
     status = response.body.contains('error');
 
     var data = json.decode(response.body);
-
     if (status) {
       print('data : ${data["error"]}');
     } else {
-      print('data : ${data["token"]}');
-      _save(data["token"]);
+      _save(data["access_token"]);
     }
   }
 

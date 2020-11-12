@@ -15,7 +15,7 @@ class _SessionShowState extends State<SessionShow> {
   @override
   Widget build(BuildContext context) {
 
-    String created_at = DateFormat.MMMEd().format(DateTime.parse("${widget.list[widget.index]['created_at']}"));
+    String created_at = DateFormat.MMMEd().format(DateTime.parse("${widget.list[widget.index]['fecha_registro']}"));
 
     return new Scaffold(
       appBar: new AppBar(
