@@ -47,6 +47,7 @@ class ItemList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return new ListView.builder(
       itemCount: list == null ? 0 : list.length,
       itemBuilder: (context, i) {
@@ -71,13 +72,10 @@ class ItemList extends StatelessWidget {
                   ],
                 ),
                 title: new Text(
-                  'Anuncio',
-                  style: TextStyle(fontSize: 12.0, color: Colors.blueGrey),
-                ),
-                subtitle: new Text(
                   list[i]['anuncio_titulo'].toString(),
                   style: TextStyle(fontSize: 14.0, color: Colors.black),
                 ),
+
               ),
             ),
           ),

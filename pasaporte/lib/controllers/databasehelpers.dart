@@ -56,6 +56,7 @@ class DataBaseHelper {
     if (response.statusCode == 200) {
       print("Successfully retrieved announcement");
       var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
       return jsonResponse;
     } else {
       print("Could not retrieve announcement");
@@ -70,6 +71,7 @@ class DataBaseHelper {
     if (response.statusCode == 200) {
       print("Successfully retrieved class current");
       var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
       return jsonResponse;
     } else {
       print("Could not retrieve class current");

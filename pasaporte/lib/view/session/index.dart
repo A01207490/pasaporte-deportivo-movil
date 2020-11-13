@@ -26,27 +26,36 @@ class _SessionIndexState extends State<SessionIndex> {
   sessionProgress() {
     return new Container(
         color: Color(0xFF071A2D),
-        padding: const EdgeInsets.all(10.0),
-        height: 100,
+        padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+        height: 90,
         child: ListView(
           children: <Widget>[
             new ListTile(
+                trailing: _sessionsCount / 30 >= 1
+                    ? Icon(
+                        Icons.verified_rounded,
+                        color: Colors.greenAccent,
+                      )
+                    : Icon(
+                        Icons.verified_rounded,
+                        color: Colors.grey,
+                      ),
                 title: new Text(
                     'Sesiones completadas: ' +
                         (_sessionsCount).round().toString() +
                         '/30',
                     style: new TextStyle(fontSize: 14.0, color: Colors.white))),
             new GFProgressBar(
-                //percentage: _sessionsCount == null ? 0.0 : _sessionsCount,
-                percentage: _sessionsCount / 30,
-                lineHeight: 15,
-                padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
-                child: const Padding(
-                  padding: EdgeInsets.only(right: 5),
-                ),
-                animation: true,
-                backgroundColor: Colors.white,
-                progressBarColor: Color(0xFF0075BC)),
+              //percentage: _sessionsCount == null ? 0.0 : _sessionsCount,
+              percentage: _sessionsCount / 30 > 1 ? 1 : _sessionsCount / 30,
+              lineHeight: 15,
+              padding: EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
+              animation: true,
+              backgroundColor: Colors.lightBlue[50],
+              progressBarColor: _sessionsCount / 30 >= 1
+                  ? Colors.greenAccent
+                  : Colors.greenAccent,
+            ),
           ],
         ));
   }
@@ -133,18 +142,18 @@ class ItemList extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Icon(
-                      Icons.check,
-                      color: Color(0xFF0075BC),
+                      Icons.verified_rounded,
+                      color: Colors.greenAccent,
                     ),
                   ],
                 ),
                 title: new Text(
-                  'Clase',
-                  style: TextStyle(fontSize: 12.0, color: Colors.blueGrey),
-                ),
-                subtitle: new Text(
                   list[i]['clase_nombre'].toString(),
                   style: TextStyle(fontSize: 14.0, color: Colors.black),
+                ),
+                subtitle: new Text(
+                  list[i]['coach_nombre'].toString(),
+                  style: TextStyle(fontSize: 12.0, color: Colors.blueGrey),
                 ),
               ),
             ),

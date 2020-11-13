@@ -64,18 +64,20 @@ class ItemList extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Icon(
-                      Icons.check,
-                      color: Colors.blueGrey,
+                      Icons.class__rounded,
+                      color: Color(0xFF0075BC),
                     ),
                   ],
                 ),
                 title: new Text(
-                  'Clase',
-                  style: TextStyle(fontSize: 12.0, color: Colors.blueGrey),
-                ),
-                subtitle: new Text(
                   list[i]['clase_nombre'].toString(),
                   style: TextStyle(fontSize: 14.0, color: Colors.black),
+                ),
+                subtitle: new Text(
+                  list[i]['clase_hora_inicio'].toString() +
+                      ' - ' +
+                      list[i]['clase_hora_inicio'].toString(),
+                  style: TextStyle(fontSize: 12.0, color: Colors.blueGrey),
                 ),
               ),
             ),

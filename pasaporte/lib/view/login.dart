@@ -7,6 +7,7 @@ import 'package:pasaporte/controllers/databasehelpers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
+import 'dialogs.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -42,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  signIn(String email, pass) async {
+  Future<int> signIn(String email, pass) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     Map data = {'email': email, 'password': pass};
     var jsonResponse = null;
@@ -61,6 +62,7 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (BuildContext context) => MainPage()),
             (Route<dynamic> route) => false);
+        return 1;
       }
     } else {
       setState(() {
@@ -68,6 +70,7 @@ class _LoginPageState extends State<LoginPage> {
       });
       print(response.body);
     }
+    return 0;
   }
 
   Container buttonSection() {
@@ -83,7 +86,12 @@ class _LoginPageState extends State<LoginPage> {
                 setState(() {
                   _isLoading = true;
                 });
-                signIn(emailController.text, passwordController.text);
+                signIn(emailController.text, passwordController.text).then((value) {
+                  if(value == 0){
+                    Dialogs.acceptDialog(
+                        context, "Oops", "La credenciales son incorrrectas");
+                  }
+                });
               },
         elevation: 0.0,
         color: Colors.blue,

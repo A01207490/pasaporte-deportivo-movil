@@ -1,13 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:getwidget/colors/gf_color.dart';
-import 'package:getwidget/components/progress_bar/gf_progress_bar.dart';
 import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:pasaporte/controllers/databasehelpers.dart';
 
+import '../dialogs.dart';
 import 'index.dart';
 
 class SessionCreate extends StatefulWidget {
@@ -19,8 +15,6 @@ class _SessionCreateState extends State<SessionCreate> {
   List data;
   DataBaseHelper databaseHelper = new DataBaseHelper();
   static bool isLoading;
-
-
 
   @override
   void initState() {
@@ -35,7 +29,7 @@ class _SessionCreateState extends State<SessionCreate> {
         title: new Text("Registrar sesión"),
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator(backgroundColor: Colors.red,))
+          ? Center(child: CircularProgressIndicator())
           : new FutureBuilder<List>(
               future: databaseHelper.getClassCurrent(),
               builder: (context, snapshot) {
@@ -118,28 +112,22 @@ class ItemList extends StatelessWidget {
         return new Container(
           child: new GestureDetector(
             onTap: () {
-              setState(() {
-                _SessionCreateState.isLoading = false;
-              });
-              _SessionCreateState.isLoading = true;
-              print(_SessionCreateState.isLoading);
               final response =
                   databaseHelper.createSession(list[i]['clase_id'].toString());
               response.then((value) {
                 print(value.toString());
-                _SessionCreateState.isLoading = false;
-                print(_SessionCreateState.isLoading);
+
                 if (value == 1) {
-                  _acceptDialog(
+                  Dialogs.acceptDialog(
                       context, "Excelente", "La sesión ha sido registrada");
                 } else if (value == 2) {
-                  _acceptDialog(
+                  Dialogs.acceptDialog(
                       context, "Oops", "El código QR del coach es incorrecto.");
                 } else if (value == 3) {
-                  _acceptDialog(context, "Oops",
+                  Dialogs.acceptDialog(context, "Oops",
                       "Ya se ha registrado una sesión el día de hoy.");
                 } else if (value == 4) {
-                  _acceptDialog(context, "Oops",
+                  Dialogs.acceptDialog(context, "Oops",
                       "El código QR no corresponde a ningun coach.");
                 }
               });
@@ -165,12 +153,15 @@ class ItemList extends StatelessWidget {
                   ],
                 ),
                 title: new Text(
-                  'Clase',
-                  style: TextStyle(fontSize: 12.0, color: Colors.blueGrey),
+                  list[i]['clase_nombre'].toString(),
+
+
+                  style: TextStyle(fontSize: 14.0, color: Colors.black),
                 ),
                 subtitle: new Text(
-                  list[i]['clase_nombre'].toString(),
-                  style: TextStyle(fontSize: 14.0, color: Colors.black),
+
+                  list[i]['coach_nombre'].toString(),
+                  style: TextStyle(fontSize: 12.0, color: Colors.blueGrey),
                 ),
               ),
             ),
