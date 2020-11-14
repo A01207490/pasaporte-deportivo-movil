@@ -7,6 +7,9 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 class DataBaseHelper {
   String serverUrl = "http://10.0.0.4:8000/api";
+  String announcementImagesUrl = "http://10.0.0.4:8000/storage/anuncios/";
+  //String announcementImagesUrl = "http://10.0.0.4:8000/storage/app/public/anuncios/";
+
   var status;
   var token;
   var sessions;

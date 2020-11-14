@@ -134,7 +134,7 @@ class _MainPageState extends State<MainPage> {
           children: <Widget>[
             new UserAccountsDrawerHeader(
               accountName: new Text('Pasaporte Deportivo'),
-              accountEmail: new Text(sharedPreferences.getString('email')),
+              accountEmail:  new Text('1'),
             ),
             ListTileTheme(
               iconColor: Color(0xFF0075BC),

@@ -112,6 +112,7 @@ class ItemList extends StatelessWidget {
         return new Container(
           child: new GestureDetector(
             onTap: () {
+
               final response =
                   databaseHelper.createSession(list[i]['clase_id'].toString());
               response.then((value) {
