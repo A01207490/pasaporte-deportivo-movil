@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pasaporte/view/clase/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pasaporte/view/login.dart';
@@ -96,7 +97,34 @@ class _MainPageState extends State<MainPage> {
                 title: new Text(
                     'Bienvenido, participa en las clases o clínicas deportivas que desees.',
                     style:
-                        new TextStyle(fontSize: 14.0, color: Colors.blueGrey))),
+                        new TextStyle(fontSize: 16.0, color: Colors.blueGrey))),
+            new ListTile(
+              title: RichText(
+                text: TextSpan(
+                  text: '• ',
+                  style: TextStyle(color: Colors.blueGrey, fontSize: 16),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: 'Cumplir 30 sesiones de 30 minutos como mínimo.',
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            new ListTile(
+              title: RichText(
+                text: TextSpan(
+                  text: '• ',
+                  style: TextStyle(color: Colors.blueGrey, fontSize: 16),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: 'Realizar las pruebas físicas al menos una vez.',
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          
           ],
         ),
       ),
@@ -105,8 +133,8 @@ class _MainPageState extends State<MainPage> {
           padding: EdgeInsets.zero,
           children: <Widget>[
             new UserAccountsDrawerHeader(
-              accountName: new Text('Pasaporte'),
-              accountEmail: new Text('pasaporte@gmail.com'),
+              accountName: new Text('Pasaporte Deportivo'),
+              accountEmail:  new Text('1'),
             ),
             ListTileTheme(
               iconColor: Color(0xFF0075BC),
@@ -135,8 +163,7 @@ class _MainPageState extends State<MainPage> {
             ListTileTheme(
               iconColor: Color(0xFF0075BC),
               child: ListTile(
-                title:
-                    new Text("Clases", style: new TextStyle(fontSize: 16.0)),
+                title: new Text("Clases", style: new TextStyle(fontSize: 16.0)),
                 leading: new Icon(Icons.class__rounded),
                 onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                   builder: (BuildContext context) => ClassIndex(),
