@@ -16,7 +16,6 @@ class _AnnouncementShowState extends State<AnnouncementShow> {
   DataBaseHelper databaseHelper = new DataBaseHelper();
   @override
   Widget build(BuildContext context) {
-    String created_at = DateFormat.MMMEd().format(DateTime.parse("${widget.list[widget.index]['created_at']}"));
     return new Scaffold(
       appBar: new AppBar(
           title: new Text("${widget.list[widget.index]['anuncio_titulo']}")

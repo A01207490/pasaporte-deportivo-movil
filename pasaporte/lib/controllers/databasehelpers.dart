@@ -1,19 +1,39 @@
 import 'dart:async';
-
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
-class DataBaseHelper {
+class DataBaseHelper extends ChangeNotifier{
   String serverUrl = "http://10.0.0.4:8000/api";
   String announcementImagesUrl = "http://10.0.0.4:8000/storage/anuncios/";
+
+  String _email;
+  String get email => _email;
+
+  set email(String value) {
+    _email = value;
+    notifyListeners();
+  }
+
+
   //String announcementImagesUrl = "http://10.0.0.4:8000/storage/app/public/anuncios/";
 
   var status;
   var token;
   var sessions;
   final StreamController countController = StreamController();
+  final StreamController registerController = StreamController();
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+  set isLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
+
+
+
 
   Future<List> getSession() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -74,7 +94,6 @@ class DataBaseHelper {
     if (response.statusCode == 200) {
       print("Successfully retrieved class current");
       var jsonResponse = json.decode(response.body);
-      print(jsonResponse);
       return jsonResponse;
     } else {
       print("Could not retrieve class current");
@@ -83,30 +102,29 @@ class DataBaseHelper {
     }
   }
 
-  Future<int> createSession(String claseId) async {
+  Future<int> createSession(String claseId, String className) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var coach_nomina = await FlutterBarcodeScanner.scanBarcode(
-        "#000000", "Cancel", true, ScanMode.QR);
-    final key = 'token';
-    final token = sharedPreferences.get(key) ?? 0;
-    Map param = {'clase_id': '$claseId', 'coach_nomina': '$coach_nomina'};
+    final token = sharedPreferences.get('token') ?? 0;
     String url = "$serverUrl/createSession";
+    var coach_nomina = '1';
+    if(className != 'Pista'){
+      coach_nomina = await FlutterBarcodeScanner.scanBarcode(
+          "#000000", "Cancel", true, ScanMode.QR);
+    }
+    Map param = {'clase_id': '$claseId', 'coach_nomina': '$coach_nomina'};
     if (coach_nomina != (-1).toString()) {
       var response = await http.post(url, body: param, headers: {
         'Accept': 'application/json',
         'Authorization': 'Bearer $token',
       });
+      print(response.body);
       if (response.statusCode == 200) {
-        print("Successfully registered class");
         return 1;
       } else if (response.statusCode == 403) {
-        print("Invalid coach id");
         return 2;
       } else if (response.statusCode == 405) {
-        print("Cannot register more that one session a day");
         return 3;
       } else if (response.statusCode == 500) {
-        print("The QR code is not valid");
         return 4;
       }
     }

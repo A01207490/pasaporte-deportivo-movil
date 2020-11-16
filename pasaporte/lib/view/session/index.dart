@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/progress_bar/gf_progress_bar.dart';
-import 'dart:async';
 import 'package:pasaporte/controllers/databasehelpers.dart';
 import 'package:pasaporte/view/session/show.dart';
 import 'package:pasaporte/view/session/create.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class SessionIndex extends StatefulWidget {
   @override
@@ -21,6 +21,7 @@ class _SessionIndexState extends State<SessionIndex> {
   void initState() {
     super.initState();
     _sessionsCount = 0.0;
+    initializeDateFormatting('es_ES', null);
   }
 
   sessionProgress() {
