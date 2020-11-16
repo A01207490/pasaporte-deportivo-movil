@@ -107,8 +107,10 @@ class _MainPageState extends State<MainPage> {
         padding: const EdgeInsets.all(20.0),
         child: new ListView(
           children: <Widget>[
-            MyCard('images/requisitos.png', 'Requisitos', 'Cumplir 30 sesiones de 30 minutos y realizar las pruebas físicas al menos una vez .'),
-            MyCard('images/consideraciones.jpg', 'Consideraciones', 'Solo se puede registrar hasta un máximo de 15 sesiones de Pista.'),
+            MyCard('images/requisitos.png', 'Requisitos',
+                'Cumplir 30 sesiones de mínimo 30 minutos y realizar las pruebas físicas al menos una vez .'),
+            MyCard('images/consideraciones.jpg', 'Consideraciones',
+                'Solo se puede registrar hasta un máximo de 15 sesiones de Pista.\n\nSolo se puede registrar una sesión por día.\n\nLas clases se pueden registrar hasta 20 minutos antes o después de que terminen. Gimnasio y Pista son excepciones.\n\nPara registrar una clase, es necesario escanear el código QR del coach. Pista es excepción.'),
           ],
         ),
       ),
@@ -123,8 +125,9 @@ class _MainPageState extends State<MainPage> {
             ListTileTheme(
               iconColor: Color(0xFF0075BC),
               child: ListTile(
-                title:
-                    new Text("Pasaporte", style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
+                title: new Text("Pasaporte",
+                    style: new TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16.0)),
                 leading: FaIcon(FontAwesomeIcons.passport),
                 onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                   builder: (BuildContext context) => SessionIndex(),
@@ -135,8 +138,9 @@ class _MainPageState extends State<MainPage> {
             ListTileTheme(
               iconColor: Color(0xFF0075BC),
               child: ListTile(
-                title:
-                    new Text("Anuncios", style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
+                title: new Text("Anuncios",
+                    style: new TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16.0)),
                 leading: new Icon(Icons.announcement),
                 onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                   builder: (BuildContext context) => AnnouncementIndex(),
@@ -147,7 +151,9 @@ class _MainPageState extends State<MainPage> {
             ListTileTheme(
               iconColor: Color(0xFF0075BC),
               child: ListTile(
-                title: new Text("Clases", style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
+                title: new Text("Clases",
+                    style: new TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16.0)),
                 leading: new Icon(Icons.class__rounded),
                 onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                   builder: (BuildContext context) => ClassIndex(),
@@ -188,14 +194,25 @@ class MyCard extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                  top: 20.0, bottom: 20.0, right: 20.0, left: 20.0),
-              child: Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),),
+            SizedBox(
+              height: 1,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                ),
+              ),
             ),
             Padding(
               padding: EdgeInsets.only(
-                  top: 0.0, bottom: 20.0, right: 20.0, left: 20.0),
+                  top: 20.0, bottom: 20.0, right: 30.0, left: 30.0),
+              child: Text(
+                title,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                  top: 0.0, bottom: 25.0, right: 30.0, left: 30.0),
               child: Text(body),
             ),
           ]),

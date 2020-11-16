@@ -95,18 +95,18 @@ class ItemList extends StatelessWidget {
                         headerAlignment: ExpandablePanelHeaderAlignment.center,
                         tapBodyToCollapse: true,
                       ),
-
                       header: Padding(
-                          padding: EdgeInsets.all(15),
+                          padding: EdgeInsets.only(
+                              top: 15, bottom: 15.0, right: 0.0, left: 25.0),
                           child: Text(
-                                list[i]['anuncio_titulo'].toString() +
+                            list[i]['anuncio_titulo'].toString() +
                                 '\n' +
-                                DateFormat.yMMMMd('es').format(DateTime.parse(list[i]['fecha_registro'].toString(),)),
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-                          )
-
-                      ),
-
+                                DateFormat.yMMMMd('es').format(DateTime.parse(
+                                  list[i]['fecha_registro'].toString(),
+                                )),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16.0),
+                          )),
                       collapsed: Text(
                         list[i]['anuncio_cuerpo'].toString(),
                         softWrap: true,
@@ -116,20 +116,21 @@ class ItemList extends StatelessWidget {
                       expanded: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          for (var _ in Iterable.generate(1))
-                            Padding(
-                                padding:   EdgeInsets.only(bottom: 10),
-                                child: Text(
-                                  list[i]['anuncio_cuerpo'].toString(),
-                                  softWrap: true,
-                                  overflow: TextOverflow.fade,
-                                )),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  top: 0, bottom: 0.0, right: 0.0, left: 0.0),
+                              child: Text(
+                                list[i]['anuncio_cuerpo'].toString(),
+                                softWrap: true,
+                                overflow: TextOverflow.fade,
+                              )),
                         ],
                       ),
                       builder: (_, collapsed, expanded) {
                         return Padding(
                           padding:
-                              EdgeInsets.only(left: 15, right: 15, bottom: 10),
+                          EdgeInsets.only(
+                              top: 0, bottom: 20.0, right: 25.0, left: 25.0),
                           child: Expandable(
                             collapsed: collapsed,
                             expanded: expanded,

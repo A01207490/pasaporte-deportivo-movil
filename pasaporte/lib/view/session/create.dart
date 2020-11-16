@@ -21,12 +21,13 @@ class _SessionCreateState extends State<SessionCreate> {
   set isLoading(value) {
     _isLoading = value;
   }
-  void _updateIsLoading(bool v){
+
+  void _updateIsLoading(bool v) {
     setState(() {
       _isLoading = v;
     });
-    print(_isLoading);
   }
+
   @override
   void initState() {
     super.initState();
@@ -63,43 +64,48 @@ class _SessionCreateState extends State<SessionCreate> {
                 return new Container(
                   child: new GestureDetector(
                     onTap: () {
-                      if(list[i]['clase_nombre'].toString() == 'Pista'){
+                      if (list[i]['clase_nombre'].toString() == 'Pista') {
                         AwesomeDialog(
                             context: context,
                             dialogType: DialogType.WARNING,
                             animType: AnimType.RIGHSLIDE,
                             headerAnimationLoop: false,
                             title: 'Advertencia',
-                            desc: '¿Esta seguro de registrar una sesión de Pista?',
+                            desc:
+                                '¿Esta seguro de registrar una sesión de Pista?',
                             btnOkOnPress: () {
                               _updateIsLoading(true);
-                              final response = databaseHelper
-                                  .createSession(list[i]['clase_id'].toString(), list[i]['clase_nombre'].toString());
+                              final response = databaseHelper.createSession(
+                                  list[i]['clase_id'].toString(),
+                                  list[i]['clase_nombre'].toString());
                               response.then((value) {
                                 _updateIsLoading(false);
                                 if (value == 1) {
                                   Dialogs.successDialog(
                                       context, "La sesión ha sido registrada");
                                 } else if (value == 2) {
-                                  Dialogs.errorDialog(
-                                      context, "El código QR del coach es incorrecto.");
+                                  Dialogs.errorDialog(context,
+                                      "El código QR del coach es incorrecto.");
                                 } else if (value == 3) {
                                   Dialogs.errorDialog(context,
                                       "Ya se ha registrado una sesión el día de hoy.");
                                 } else if (value == 4) {
                                   Dialogs.errorDialog(context,
                                       "El código QR no corresponde a ningun coach.");
+                                } else if (value == 5) {
+                                  Dialogs.errorDialog(context,
+                                      "No es posible registrar más sesiones de Pista");
                                 }
                               });
                             },
                             btnOkIcon: Icons.check_circle,
                             btnOkColor: Colors.green)
                           ..show();
-
-                      }else{
+                      } else {
                         _updateIsLoading(true);
-                        final response = databaseHelper
-                            .createSession(list[i]['clase_id'].toString(), list[i]['clase_nombre'].toString());
+                        final response = databaseHelper.createSession(
+                            list[i]['clase_id'].toString(),
+                            list[i]['clase_nombre'].toString());
                         response.then((value) {
                           print(value.toString());
                           _updateIsLoading(false);
@@ -107,8 +113,8 @@ class _SessionCreateState extends State<SessionCreate> {
                             Dialogs.successDialog(
                                 context, "La sesión ha sido registrada");
                           } else if (value == 2) {
-                            Dialogs.errorDialog(
-                                context, "El código QR del coach es incorrecto.");
+                            Dialogs.errorDialog(context,
+                                "El código QR del coach es incorrecto.");
                           } else if (value == 3) {
                             Dialogs.errorDialog(context,
                                 "Ya se ha registrado una sesión el día de hoy.");
@@ -118,8 +124,6 @@ class _SessionCreateState extends State<SessionCreate> {
                           }
                         });
                       }
-
-
                     },
                     child: new Card(
                       child: new ListTile(
@@ -162,112 +166,12 @@ class _SessionCreateState extends State<SessionCreate> {
                 );
               },
             );
-            return new ItemList(
-              list: list,
-            );
           }
           return new Center(
             child: new CircularProgressIndicator(),
           );
         },
       ),
-    );
-  }
-}
-
-class ItemList extends StatelessWidget {
-  final List list;
-  DataBaseHelper databaseHelper = new DataBaseHelper();
-
-  ItemList({this.list});
-
-  bool _isLoading = false;
-
-  get isLoading => _isLoading;
-
-  set isLoading(value) {
-    _isLoading = value;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (list.length == 0)
-      return new ListView(
-        padding: const EdgeInsets.all(20.0),
-        children: <Widget>[
-          new ListTile(
-              title: new Text('Por el momento no hay clases disponibles.',
-                  style:
-                      new TextStyle(fontSize: 14.0, color: Colors.blueGrey))),
-        ],
-      );
-
-    return new ListView.builder(
-      itemCount: list == null ? 0 : list.length,
-      itemBuilder: (context, i) {
-        return new Container(
-          child: new GestureDetector(
-            onTap: () {
-              isLoading = true;
-              final response =
-                  databaseHelper.createSession(list[i]['clase_id'].toString(), list[i]['clase_nombre'].toString());
-              response.then((value) {
-                print(value.toString());
-                isLoading = false;
-                if (value == 1) {
-                  Dialogs.successDialog(
-                      context, "La sesión ha sido registrada");
-                } else if (value == 2) {
-                  Dialogs.errorDialog(
-                      context, "El código QR del coach es incorrecto.");
-                } else if (value == 3) {
-                  Dialogs.errorDialog(
-                      context, "Ya se ha registrado una sesión el día de hoy.");
-                } else if (value == 4) {
-                  Dialogs.errorDialog(
-                      context, "El código QR no corresponde a ningun coach.");
-                }
-              });
-            },
-            child: new Card(
-              child: new ListTile(
-                leading: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(
-                      Icons.class__rounded,
-                      color: Color(0xFF0075BC),
-                    ),
-                  ],
-                ),
-                trailing: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    isLoading
-                        ? SizedBox(
-                            child: CircularProgressIndicator(),
-                            height: 10.0,
-                            width: 10.0,
-                          )
-                        : Icon(
-                            Icons.add_circle_outline,
-                            color: Color(0xFF0075BC),
-                          ),
-                  ],
-                ),
-                title: new Text(
-                  list[i]['clase_nombre'].toString(),
-                  style: TextStyle(fontSize: 14.0, color: Colors.black),
-                ),
-                subtitle: new Text(
-                  list[i]['coach_nombre'].toString(),
-                  style: TextStyle(fontSize: 12.0, color: Colors.blueGrey),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 }

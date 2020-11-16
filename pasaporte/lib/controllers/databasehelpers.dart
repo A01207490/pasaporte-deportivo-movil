@@ -5,18 +5,18 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
-class DataBaseHelper extends ChangeNotifier{
+class DataBaseHelper extends ChangeNotifier {
   String serverUrl = "http://10.0.0.4:8000/api";
   String announcementImagesUrl = "http://10.0.0.4:8000/storage/anuncios/";
 
   String _email;
+
   String get email => _email;
 
   set email(String value) {
     _email = value;
     notifyListeners();
   }
-
 
   //String announcementImagesUrl = "http://10.0.0.4:8000/storage/app/public/anuncios/";
 
@@ -26,14 +26,13 @@ class DataBaseHelper extends ChangeNotifier{
   final StreamController countController = StreamController();
   final StreamController registerController = StreamController();
   bool _isLoading = false;
+
   bool get isLoading => _isLoading;
+
   set isLoading(bool value) {
     _isLoading = value;
     notifyListeners();
   }
-
-
-
 
   Future<List> getSession() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -46,14 +45,12 @@ class DataBaseHelper extends ChangeNotifier{
     });
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
-      print("Successfully retrieved sessions");
-      print(jsonResponse);
+      print("successfully retrieved session");
       sessions = jsonResponse.length.toDouble();
-      print('Completed sessions: ' + sessions.toString());
       countController.sink.add(sessions);
       return jsonResponse;
     } else {
-      print("Could not retrieve session");
+      print("could not retrieve session");
       print(response.statusCode);
       return [];
     }
@@ -63,11 +60,11 @@ class DataBaseHelper extends ChangeNotifier{
     String url = "$serverUrl/getClass";
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      print("Successfully retrieved class");
+      print("successfully retrieved class");
       var jsonResponse = json.decode(response.body);
       return jsonResponse;
     } else {
-      print("Could not retrieve class");
+      print("could not retrieve class");
       print(response.statusCode);
       return [];
     }
@@ -77,12 +74,11 @@ class DataBaseHelper extends ChangeNotifier{
     String url = "$serverUrl/getAnnouncement";
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      print("Successfully retrieved announcement");
+      print("successfully retrieved announcement");
       var jsonResponse = json.decode(response.body);
-      print(jsonResponse);
       return jsonResponse;
     } else {
-      print("Could not retrieve announcement");
+      print("could not retrieve announcement");
       print(response.statusCode);
       return [];
     }
@@ -92,26 +88,26 @@ class DataBaseHelper extends ChangeNotifier{
     String url = "$serverUrl/getClassCurrent";
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      print("Successfully retrieved class current");
+      print("successfully retrieved class current");
       var jsonResponse = json.decode(response.body);
       return jsonResponse;
     } else {
-      print("Could not retrieve class current");
+      print("could not retrieve class current");
       print(response.statusCode);
       return [];
     }
   }
 
-  Future<int> createSession(String claseId, String className) async {
+  Future<int> createSession(String clase_id, String clase_nombre) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     final token = sharedPreferences.get('token') ?? 0;
     String url = "$serverUrl/createSession";
     var coach_nomina = '1';
-    if(className != 'Pista'){
+    if (clase_nombre != 'Pista') {
       coach_nomina = await FlutterBarcodeScanner.scanBarcode(
           "#000000", "Cancel", true, ScanMode.QR);
     }
-    Map param = {'clase_id': '$claseId', 'coach_nomina': '$coach_nomina'};
+    Map param = {'clase_id': '$clase_id', 'coach_nomina': '$coach_nomina'};
     if (coach_nomina != (-1).toString()) {
       var response = await http.post(url, body: param, headers: {
         'Accept': 'application/json',
@@ -126,6 +122,8 @@ class DataBaseHelper extends ChangeNotifier{
         return 3;
       } else if (response.statusCode == 500) {
         return 4;
+      } else if (response.statusCode == 406) {
+        return 5;
       }
     }
     return 0;
@@ -138,7 +136,6 @@ class DataBaseHelper extends ChangeNotifier{
         headers: {'Accept': 'application/json'},
         body: {"email": "$email", "password": "$password"});
     status = response.body.contains('error');
-
     var data = json.decode(response.body);
     if (status) {
       print('data : ${data["error"]}');
