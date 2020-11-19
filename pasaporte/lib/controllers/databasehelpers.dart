@@ -6,8 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 class DataBaseHelper extends ChangeNotifier {
-  String serverUrl = "http://10.0.0.4:8000/api";
-  String announcementImagesUrl = "http://10.0.0.4:8000/storage/anuncios/";
+  String serverUrl = "http://pasaportedeportivoitesm.com/api";
+  String announcementImagesUrl = "http://pasaportedeportivoitesm.com/storage/anuncios/";
 
   String _email;
 
@@ -26,6 +26,7 @@ class DataBaseHelper extends ChangeNotifier {
   final StreamController countController = StreamController();
   final StreamController registerController = StreamController();
   bool _isLoading = false;
+
 
   bool get isLoading => _isLoading;
 

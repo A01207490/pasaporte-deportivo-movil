@@ -84,13 +84,23 @@ class _LoginPageState extends State<LoginPage> {
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
       if (jsonResponse != null) {
+        url = databaseHelper.serverUrl.toString() + "/me";
+        var token = jsonResponse['access_token'];
+        sharedPreferences.setString("token", jsonResponse['access_token']);
+        var response = await http.get(url, headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        jsonResponse = json.decode(response.body);
+        sharedPreferences.setString("email", email);
+        sharedPreferences.setString("pass", pass);
+        sharedPreferences.setString("name", jsonResponse['name']);
+        sharedPreferences.setString("semester", jsonResponse['semestre']);
+        //databaseHelper.email = email;
         setState(() {
           _isLoading = false;
         });
-        sharedPreferences.setString("token", jsonResponse['access_token']);
-        sharedPreferences.setString("email", email);
-        sharedPreferences.setString("pass", pass);
-        databaseHelper.email = email;
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (BuildContext context) => MainPage()),
             (Route<dynamic> route) => false);

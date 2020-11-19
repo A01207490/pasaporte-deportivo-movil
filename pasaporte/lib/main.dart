@@ -57,12 +57,22 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   SharedPreferences sharedPreferences;
-
+  String email;
+  String name;
   @override
   void initState() {
+    setUser();
     super.initState();
     checkLoginStatus();
   }
+  setUser() async{
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      email = sharedPreferences.getString('email') ?? "ak id";
+      name = sharedPreferences.getString('name') ?? "ak id";
+    });
+  }
+
 
   checkLoginStatus() async {
     sharedPreferences = await SharedPreferences.getInstance();
@@ -84,6 +94,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     final dataBaseHelper = Provider.of<DataBaseHelper>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Pasaporte Deportivo"),
@@ -119,8 +130,8 @@ class _MainPageState extends State<MainPage> {
           padding: EdgeInsets.zero,
           children: <Widget>[
             new UserAccountsDrawerHeader(
-              accountName: new Text('Pasaporte Deportivo'),
-              //accountEmail: new Text(sharedPreferences.get('email') ?? ''),
+              accountName: new Text(name ?? ''),
+              accountEmail: new Text(email ?? ''),
             ),
             ListTileTheme(
               iconColor: Color(0xFF0075BC),
