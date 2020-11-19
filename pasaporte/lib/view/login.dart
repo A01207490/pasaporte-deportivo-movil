@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:pasaporte/controllers/databasehelpers.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
@@ -20,6 +21,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final dataBaseHelper = Provider.of<DataBaseHelper>(context);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
         .copyWith(statusBarColor: Colors.transparent));
     return Scaffold(
@@ -36,7 +38,37 @@ class _LoginPageState extends State<LoginPage> {
                 children: <Widget>[
                   headerSection(),
                   textSection(),
-                  buttonSection(),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 45.0,
+                    padding: EdgeInsets.symmetric(horizontal: 50.0),
+                    margin: EdgeInsets.only(top: 25.0),
+                    child: RaisedButton(
+                      onPressed: emailController.text == "" ||
+                              passwordController.text == ""
+                          ? null
+                          : () {
+                              setState(() {
+                                _isLoading = true;
+                              });
+                              signIn(emailController.text,
+                                      passwordController.text)
+                                  .then((value) {
+                                if (value == 0) {
+                                  Dialogs.errorDialog(context,
+                                      "La credenciales son incorrrectas");
+                                }
+                                dataBaseHelper.email = emailController.text;
+                              });
+                            },
+                      elevation: 0.0,
+                      color: Colors.blue,
+                      child: Text("Ingresar",
+                          style: TextStyle(color: Colors.white70)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0)),
+                    ),
+                  )
                 ],
               ),
       ),
@@ -48,17 +80,27 @@ class _LoginPageState extends State<LoginPage> {
     Map data = {'email': email, 'password': pass};
     var jsonResponse = null;
     String url = databaseHelper.serverUrl.toString() + "/login";
-    var response =
-        await http.post(url, body: data);
+    var response = await http.post(url, body: data);
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
       if (jsonResponse != null) {
+        url = databaseHelper.serverUrl.toString() + "/me";
+        var token = jsonResponse['access_token'];
+        sharedPreferences.setString("token", jsonResponse['access_token']);
+        var response = await http.get(url, headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        jsonResponse = json.decode(response.body);
+        sharedPreferences.setString("email", email);
+        sharedPreferences.setString("pass", pass);
+        sharedPreferences.setString("name", jsonResponse['name']);
+        sharedPreferences.setString("semester", jsonResponse['semestre']);
+        //databaseHelper.email = email;
         setState(() {
           _isLoading = false;
         });
-        sharedPreferences.setString("token", jsonResponse['access_token']);
-        sharedPreferences.setString("email", email);
-        sharedPreferences.setString("pass", pass);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (BuildContext context) => MainPage()),
             (Route<dynamic> route) => false);
@@ -71,34 +113,6 @@ class _LoginPageState extends State<LoginPage> {
       print(response.body);
     }
     return 0;
-  }
-
-  Container buttonSection() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 45.0,
-      padding: EdgeInsets.symmetric(horizontal: 50.0),
-      margin: EdgeInsets.only(top: 25.0),
-      child: RaisedButton(
-        onPressed: emailController.text == "" || passwordController.text == ""
-            ? null
-            : () {
-                setState(() {
-                  _isLoading = true;
-                });
-                signIn(emailController.text, passwordController.text).then((value) {
-                  if(value == 0){
-                    Dialogs.acceptDialog(
-                        context, "Oops", "La credenciales son incorrrectas");
-                  }
-                });
-              },
-        elevation: 0.0,
-        color: Colors.blue,
-        child: Text("Ingresar", style: TextStyle(color: Colors.white70)),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
-      ),
-    );
   }
 
   final TextEditingController emailController = new TextEditingController();
@@ -147,7 +161,6 @@ class _LoginPageState extends State<LoginPage> {
       child: Text("Pasaporte Deportivo",
           textAlign: TextAlign.center,
           style: TextStyle(
-
               color: Colors.white70,
               fontSize: 30.0,
               fontWeight: FontWeight.bold)),

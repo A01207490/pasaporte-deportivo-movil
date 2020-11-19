@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pasaporte/controllers/databasehelpers.dart';
 import 'package:pasaporte/view/announcement/show.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class AnnouncementIndex extends StatefulWidget {
   @override
@@ -17,6 +18,7 @@ class _AnnouncementIndexState extends State<AnnouncementIndex> {
   @override
   void initState() {
     super.initState();
+    initializeDateFormatting('es_ES', null);
   }
 
   @override
@@ -74,7 +76,7 @@ class ItemList extends StatelessWidget {
                     height: 150,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.orange,
+                        color: Color(0xFF071A2D),
                         image: DecorationImage(
                           image: NetworkImage(
                               databaseHelper.announcementImagesUrl +
@@ -93,20 +95,18 @@ class ItemList extends StatelessWidget {
                         headerAlignment: ExpandablePanelHeaderAlignment.center,
                         tapBodyToCollapse: true,
                       ),
-
                       header: Padding(
-                          padding: EdgeInsets.all(10),
+                          padding: EdgeInsets.only(
+                              top: 15, bottom: 15.0, right: 0.0, left: 25.0),
                           child: Text(
-                            list[i]['id'].toString() +
-                                ' ' +
-                                list[i]['anuncio_titulo'].toString() +
+                            list[i]['anuncio_titulo'].toString() +
                                 '\n' +
-                                DateFormat.MMMEd().format(DateTime.parse(list[i]['created_at'].toString(),)),
-                            style: Theme.of(context).textTheme.body2,
-                          )
-
-                      ),
-
+                                DateFormat.yMMMMd('es').format(DateTime.parse(
+                                  list[i]['fecha_registro'].toString(),
+                                )),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16.0),
+                          )),
                       collapsed: Text(
                         list[i]['anuncio_cuerpo'].toString(),
                         softWrap: true,
@@ -116,20 +116,21 @@ class ItemList extends StatelessWidget {
                       expanded: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          for (var _ in Iterable.generate(1))
-                            Padding(
-                                padding: EdgeInsets.only(bottom: 10),
-                                child: Text(
-                                  list[i]['anuncio_cuerpo'].toString(),
-                                  softWrap: true,
-                                  overflow: TextOverflow.fade,
-                                )),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  top: 0, bottom: 0.0, right: 0.0, left: 0.0),
+                              child: Text(
+                                list[i]['anuncio_cuerpo'].toString(),
+                                softWrap: true,
+                                overflow: TextOverflow.fade,
+                              )),
                         ],
                       ),
                       builder: (_, collapsed, expanded) {
                         return Padding(
                           padding:
-                              EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                          EdgeInsets.only(
+                              top: 0, bottom: 20.0, right: 25.0, left: 25.0),
                           child: Expandable(
                             collapsed: collapsed,
                             expanded: expanded,
@@ -146,83 +147,5 @@ class ItemList extends StatelessWidget {
         ));
       },
     );
-  }
-}
-
-const loremIpsum =
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-
-class Card1 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ExpandableNotifier(
-        child: Padding(
-      padding: const EdgeInsets.all(10),
-      child: Card(
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          children: <Widget>[
-            SizedBox(
-              height: 150,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.orange,
-                  image: const DecorationImage(
-                    image: NetworkImage(
-                        'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
-            ScrollOnExpand(
-              scrollOnExpand: true,
-              scrollOnCollapse: false,
-              child: ExpandablePanel(
-                theme: const ExpandableThemeData(
-                  headerAlignment: ExpandablePanelHeaderAlignment.center,
-                  tapBodyToCollapse: true,
-                ),
-                header: Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      "ExpandablePanel",
-                      style: Theme.of(context).textTheme.body2,
-                    )),
-                collapsed: Text(
-                  loremIpsum,
-                  softWrap: true,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                expanded: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    for (var _ in Iterable.generate(5))
-                      Padding(
-                          padding: EdgeInsets.only(bottom: 10),
-                          child: Text(
-                            loremIpsum,
-                            softWrap: true,
-                            overflow: TextOverflow.fade,
-                          )),
-                  ],
-                ),
-                builder: (_, collapsed, expanded) {
-                  return Padding(
-                    padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                    child: Expandable(
-                      collapsed: collapsed,
-                      expanded: expanded,
-                      theme: const ExpandableThemeData(crossFadePoint: 0),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    ));
   }
 }
