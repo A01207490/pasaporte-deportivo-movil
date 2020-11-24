@@ -8,6 +8,8 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 class DataBaseHelper extends ChangeNotifier {
   String serverUrl = "http://pasaportedeportivoitesm.com/api";
   String announcementImagesUrl = "http://pasaportedeportivoitesm.com/storage/anuncios/";
+  //String serverUrl = "http://10.0.0.4:8000/api";
+  //String announcementImagesUrl = "http://10.0.0.4:8000/storage/anuncios/";
 
   String _email;
 
